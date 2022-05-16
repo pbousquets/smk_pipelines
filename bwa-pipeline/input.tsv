@@ -1,0 +1,3 @@
+patient	samp	readgroup	type	f1	f2
+DEM_H000004	s1	DEM_H000004_T01_01	tumor	/data/programs/isabl_demo/data_directory/experiments/00/08/8/data/DEM_H000004_T01_01_WG01_1bd91cf2a30082ec_DEM_H000004_T01_R1.fastq.gz	/data/programs/isabl_demo/data_directory/experiments/00/08/8/data/DEM_H000004_T01_01_WG01_1bd91cf2a30082ec_DEM_H000004_T01_R2.fastq.gz
+DEM_H000004	s2	DEM_H000004_N01_01	normal	/data/programs/isabl_demo/data_directory/experiments/00/07/7/data/DEM_H000004_N01_01_WG01_29c7207b4f688b74_DEM_H000004_N01_R1.fastq.gz	/data/programs/isabl_demo/data_directory/experiments/00/07/7/data/DEM_H000004_N01_01_WG01_29c7207b4f688b74_DEM_H000004_N01_R2.fastq.gz
