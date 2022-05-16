@@ -1,0 +1,24 @@
+13:59:45.806 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/usr/picard/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Wed May 11 13:59:45 GMT+01:00 2022] MarkDuplicates --INPUT DEM_H000004_N01_01_WG01_29c7207b4f688b74_DEM_H000004_N01.tmp2.bam --OUTPUT DEM_H000004_N01_01_WG01_29c7207b4f688b74_DEM_H000004_N01.sorted.dups.bam --METRICS_FILE DEM_H000004_N01_01_WG01_29c7207b4f688b74_DEM_H000004_N01.marked_dup_metrics.txt --COMPRESSION_LEVEL 0 --MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP 50000 --MAX_FILE_HANDLES_FOR_READ_ENDS_MAP 8000 --SORTING_COLLECTION_SIZE_RATIO 0.25 --TAG_DUPLICATE_SET_MEMBERS false --REMOVE_SEQUENCING_DUPLICATES false --TAGGING_POLICY DontTag --CLEAR_DT true --DUPLEX_UMI false --ADD_PG_TAG_TO_READS true --REMOVE_DUPLICATES false --ASSUME_SORTED false --DUPLICATE_SCORING_STRATEGY SUM_OF_BASE_QUALITIES --PROGRAM_RECORD_ID MarkDuplicates --PROGRAM_GROUP_NAME MarkDuplicates --READ_NAME_REGEX <optimized capture of last three ':' separated fields as numeric values> --OPTICAL_DUPLICATE_PIXEL_DISTANCE 100 --MAX_OPTICAL_DUPLICATE_SET_SIZE 300000 --VERBOSITY INFO --QUIET false --VALIDATION_STRINGENCY STRICT --MAX_RECORDS_IN_RAM 500000 --CREATE_INDEX false --CREATE_MD5_FILE false --GA4GH_CLIENT_SECRETS client_secrets.json --help false --version false --showHidden false --USE_JDK_DEFLATER false --USE_JDK_INFLATER false
+[Wed May 11 13:59:45 GMT+01:00 2022] Executing as pbousquets@pinchinX on Linux 4.19.0-16-amd64 amd64; OpenJDK 64-Bit Server VM 1.8.0_292-b10; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: Version:2.27.1-1-gd784ca3-SNAPSHOT
+INFO	2022-05-11 13:59:45	MarkDuplicates	Start of doWork freeMemory: 2035641624; totalMemory: 2058354688; maxMemory: 28631367680
+INFO	2022-05-11 13:59:45	MarkDuplicates	Reading input file and constructing read end information.
+INFO	2022-05-11 13:59:45	MarkDuplicates	Will retain up to 103736839 data points before spilling to disk.
+INFO	2022-05-11 13:59:46	MarkDuplicates	Read 4977 records. 0 pairs never matched.
+INFO	2022-05-11 13:59:47	MarkDuplicates	After buildSortedReadEndLists freeMemory: 1211518888; totalMemory: 2058354688; maxMemory: 28631367680
+INFO	2022-05-11 13:59:47	MarkDuplicates	Will retain up to 894730240 duplicate indices before spilling to disk.
+INFO	2022-05-11 13:59:50	MarkDuplicates	Traversing read pair information and detecting duplicates.
+INFO	2022-05-11 13:59:50	MarkDuplicates	Traversing fragment information and detecting duplicates.
+INFO	2022-05-11 13:59:50	MarkDuplicates	Sorting list of duplicate records.
+INFO	2022-05-11 13:59:50	MarkDuplicates	After generateDuplicateIndexes freeMemory: 2042813648; totalMemory: 9216458752; maxMemory: 28631367680
+INFO	2022-05-11 13:59:50	MarkDuplicates	Marking 88 records as duplicates.
+INFO	2022-05-11 13:59:50	MarkDuplicates	Found 25 optical duplicate clusters.
+INFO	2022-05-11 13:59:50	MarkDuplicates	Reads are assumed to be ordered by: coordinate
+INFO	2022-05-11 13:59:51	MarkDuplicates	Writing complete. Closing input iterator.
+INFO	2022-05-11 13:59:51	MarkDuplicates	Duplicate Index cleanup.
+INFO	2022-05-11 13:59:51	MarkDuplicates	Getting Memory Stats.
+INFO	2022-05-11 13:59:51	MarkDuplicates	Before output close freeMemory: 9199017640; totalMemory: 9216458752; maxMemory: 28631367680
+INFO	2022-05-11 13:59:51	MarkDuplicates	Closed outputs. Getting more Memory Stats.
+INFO	2022-05-11 13:59:51	MarkDuplicates	After output close freeMemory: 9199098928; totalMemory: 9216458752; maxMemory: 28631367680
+[Wed May 11 13:59:51 GMT+01:00 2022] picard.sam.markduplicates.MarkDuplicates done. Elapsed time: 0.09 minutes.
+Runtime.totalMemory()=9216458752

@@ -1,0 +1,21 @@
+include: "rules/utils.smk"
+wildcard_constraints:
+    sample = '|'.join([x for x in smps]),
+    readgroup = '|'.join([x for x in rgs]), 
+    patient = '|'.join([x for x in pats]) 
+
+rule final_bam:
+    input:
+        expand("{keys}.marked_dup_metrics.txt", keys=keys),
+        expand("{smps}.dups.indelrealigned.bqsr.bam", smps=smps),
+        expand("{smps}.recal_data.table", smps=smps),
+    
+include: "rules/align.smk"
+include: "rules/sort.smk"
+include: "rules/markdups.smk"
+include: "rules/cluster.smk"
+include: "rules/merge.smk"
+include: "rules/indel_realigner.smk"
+include: "rules/split.smk"
+include: "rules/mergeRG.smk"
+include: "rules/base_recal.smk"
