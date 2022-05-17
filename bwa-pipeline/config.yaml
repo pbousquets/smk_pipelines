@@ -6,5 +6,3 @@ PU: CNAG
 
 ### Other params
 outdir: bams
-# remove_temp: true
-# tempdir: .tmp/

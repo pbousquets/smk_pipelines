@@ -42,14 +42,6 @@ properties:
         type: string
         default: bams
         description: Name for the output directory that will be created. 
-    # remove_temp: 
-    #     type: boolean
-    #     default: true
-    #     description: Remove temporal directory
-    # tempdir:
-    #     type: string
-    #     default: /tmp/alignment
-    #     description: Temporal directory
 
 required:
     - input
