@@ -1,0 +1,10 @@
+input: input.tsv
+idx: /data/personalized_medicine/ref/GRCh38.d1.vd1.fa
+dbsnp: /data/databases/dbSNP/UCSC_dbSNP153Common_hg38_combined.chr.vcf.gz
+PL: ILLUMINA-NOVASEQ-6000
+PU: CNAG
+
+### Other params
+outdir: bams
+# remove_temp: true
+# tempdir: .tmp/

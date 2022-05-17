@@ -1,4 +1,6 @@
+configfile: "config.yaml"
 include: "rules/utils.smk"
+
 wildcard_constraints:
     sample = '|'.join([x for x in smps]),
     readgroup = '|'.join([x for x in rgs]), 
@@ -8,8 +10,10 @@ rule final_bam:
     input:
         expand("{keys}.marked_dup_metrics.txt", keys=keys),
         expand("{smps}.dups.indelrealigned.bqsr.bam", smps=smps),
-        expand("{smps}.recal_data.table", smps=smps),
-    
+        expand("{smps}.recal_data.table", smps=smps)
+    shell:
+        'f=$(ls); mkdir .cleanup; mv $f .cleanup; cd .cleanup; mv {input} *.dups.indelrealigned.bqsr.bam.bai ../.; cd ..; rm -rf .cleanup'
+
 include: "rules/align.smk"
 include: "rules/sort.smk"
 include: "rules/markdups.smk"

@@ -8,11 +8,9 @@ rule samtools_merge:
         touch=aggregate_input
     output:
         temp("{patient}.merged.bam")
-    message:
-        "Mergin!",
     threads: 
-        config.get("samtools_threads", 7),
+        config.get("other_threads", 4),
     singularity:
         "docker://labxa/bwamem2",
     shell:
-        "samtools merge -@ {threads} -l 0 {output} {input.bams}/*/*/sorted.dups.bam && samtools index -@ {threads} {output}"
+        "samtools merge -@ {threads} -l 0 {output} {input.bams}/*/*/sorted.dups.bam && samtools index -@ {threads} {output} 2>> .logs/samtools_merge.log"

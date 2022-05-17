@@ -4,7 +4,7 @@ rule mergeRG:
     output:
         "{sample}.dups.indelrealigned.bam",
     threads: 
-        config.get("samtools_threads", 7),
+        config.get("other_threads", 4),
     singularity:
         "docker://labxa/bwamem2",
     shell:
@@ -12,7 +12,7 @@ rule mergeRG:
         nfiles=$(ls {wildcards.sample}.*.dups.indelrealigned.bam | wc -l)
         if [ $nfiles -gt 1 ]
         then
-            samtools merge -@ {threads} -l 0 {output} {wildcards.sample}.*.dups.indelrealigned.bam
+            samtools merge -@ {threads} -l 0 {output} {wildcards.sample}.*.dups.indelrealigned.bam 2>> .logs/mergeRG.log
         else
             mv {wildcards.sample}.*.dups.indelrealigned.bam {output}
         fi && samtools index -@ {threads} {output}
