@@ -8,7 +8,8 @@ rule bwa_mem2:
     params:
         PL = config['PL'],
         PU = config['PU'],
-        rg = r"-R '@RG\tID:{sample}.{readgroup}\tSM:{patient}\tPL:{params.PL}\tPU:{params.PU}\tLB:{sample}'", #Keep sample in RG ID to allow the pipeline merge back later
+        CN = config['CN'],
+        rg = r"-R '@RG\tID:{sample}.{readgroup}\tSM:{patient}\tPL:{params.PL}\tPU:{params.PU}\tLB:{sample}\tCN:{params.CN}'", #Keep sample in RG ID to allow the pipeline merge back later
     threads: 
         config.get("bwa_threads", 18),
     singularity:

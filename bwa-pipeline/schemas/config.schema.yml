@@ -21,7 +21,11 @@ properties:
     PU:
         type: string
         default: MACROGEN
-        description: Platform Unit Center
+        description: Platform Unit
+    CN:
+        type: string    
+        default: MACROGEN
+        description: Platform Center
     bwa_threads:
         type: number
         default: 20
