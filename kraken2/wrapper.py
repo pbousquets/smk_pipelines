@@ -19,7 +19,7 @@ from pathlib import Path
 @click.option('--kraken_threads', default=10, help='Number of threads for kraken', type = int)
 @click.option('--cores', default=16, help='Max number of cores provided to snakemake', type = int)
 @click.option('--verbose', default = False, help="Increase verbosity",is_flag=True)
-@click.option('--clean/--no-clean', is_flag=True, default = True, help="Whether remove the config file nad logs or not")
+@click.option('--clean/--no-clean', is_flag=True, default = True, help="Whether to remove the config file nad logs or not")
 
 def run(input, db, extra_contigs, read_length, threads, verbose, outdir, qual, confidence, taxa, cores, kraken_threads, clean):
     """Simple wrapper for launching Kraken/Bracken with snakemake."""

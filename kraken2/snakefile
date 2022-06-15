@@ -44,7 +44,7 @@ rule viral_contigs:
         """
         if [ -f {params.contigs} ]
         then 
-            samtools view {input.bam} -F 3852 --fetch-pairs -@ {threads} -b -o {output} $(cat {params.contigs}) 
+            samtools view {input.bam} -F 3852 --fetch-pairs -@ {threads} $(cat {params.contigs})  | samtools collate -fu -@ {threads} -o {output} - 
         else
             samtools view -H {input.bam} -F 3852 --fetch-pairs -@ {threads} -b -o {output}  
         fi
@@ -58,7 +58,7 @@ rule samtools_merge:
         pipe("{sample}.merged.bam")
     threads: config["threads"],
     shell:
-        "samtools merge -u - {input.viral} {input.unmapped} -@ {threads}| samtools collate -fu -@ {threads} -o {output} - "
+        "samtools merge -u {output} {input.viral} {input.unmapped} -@ {threads}"
 
 rule samtools_fastq:
     input:
