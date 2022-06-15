@@ -1,0 +1,46 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: Kraken pipeline configuration
+
+type: object
+
+properties:
+    input:
+        type: string
+        description: filepath to file containing bams to analyze (one single column)
+    contigs:
+        default: "none"
+        type: string
+        description: File containing contig names of viral sequence
+    db:
+        type: string
+        default: "default"
+        description: Path to Kraken/Bracken DB. Default is an integrated viral DB 
+    taxa:
+        type: string
+        default: S
+        description: Taxa for abundance estimation with bracken. Default is S(pecies).  
+    threads:
+        type: number
+        default: 4
+        description: Number of threads to use per job
+    kraken_threads:
+        type: number
+        default: 10
+        description: Number of threads for kraken
+    confidence:
+        type: number
+        default: 0.8
+        description: Kraken confidence argument (must be between 0-1)
+    qual:
+        type: integer
+        default: 20
+        description: Kraken minimum-base-quality argument
+    read_length:
+        type: integer
+        default: 150
+        description: BAMs read length
+
+required:
+    - input
+    - db

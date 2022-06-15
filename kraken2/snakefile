@@ -1,0 +1,97 @@
+import pathlib
+import pandas as pd
+from snakemake.utils import validate, min_version
+
+min_version("5.9.1")
+validate(config, "schemas/config.schema.yml")
+
+df = pd.read_csv(config["input"], sep = "\t", dtype=str)
+df['sample'] = df['bam'].apply(lambda x: pathlib.Path(x).stem)
+df = df.set_index(["sample"], drop=False)
+df['path'] = df['bam'].apply(lambda x: pathlib.Path(x).parent.absolute())
+
+wildcard_constraints:
+    sample = '|'.join([x for x in df['sample']]), 
+    path = '|'.join([str(x) for x in df['path']]), 
+
+def get_bam(wildcards):
+    return {'bam' : df.loc[wildcards.sample, 'bam']}
+
+rule all:
+    input:
+        expand("{sample}.report.txt", sample=df["sample"]),
+        expand("{sample}.kraken.out", sample=df["sample"]),
+        expand("{sample}.bracken.report.txt", sample=df["sample"]),
+        expand("{sample}.bracken.results.txt", sample=df["sample"])
+
+rule unmapped_reads:
+    input:
+        unpack(get_bam)
+    output:
+        pipe('{sample}.unmapped.bam'),
+    shell:
+        "samtools view {input.bam} -F 3840 -f 1 -b -o {output} '*'"
+
+rule viral_contigs:
+    input:
+        unpack(get_bam)
+    output:
+        pipe('{sample}.virus.bam'),
+    params:
+        contigs = config["contigs"],
+    threads: config["threads"],
+    shell: 
+        """
+        if [ -f {params.contigs} ]
+        then 
+            samtools view {input.bam} -F 3852 --fetch-pairs -@ {threads} -b -o {output} $(cat {params.contigs}) 
+        else
+            samtools view -H {input.bam} -F 3852 --fetch-pairs -@ {threads} -b -o {output}  
+        fi
+        """
+
+rule samtools_merge:
+    input:
+        viral = "{sample}.virus.bam",
+        unmapped = "{sample}.unmapped.bam",
+    output:
+        pipe("{sample}.merged.bam")
+    threads: config["threads"],
+    shell:
+        "samtools merge -u - {input.viral} {input.unmapped} -@ {threads}| samtools collate -fu -@ {threads} -o {output} - "
+
+rule samtools_fastq:
+    input:
+        "{sample}.merged.bam"
+    output:
+        f1 = temp("{sample}_1.fastq.gz"),
+        f2 = temp("{sample}_2.fastq.gz"),
+    shell: 
+        "samtools fastq -1 {output.f1} -2 {output.f2} -s /dev/null -0 /dev/null {input} 2>/dev/null"
+
+rule kraken:
+    input:
+        ["{sample}_1.fastq.gz", "{sample}_2.fastq.gz"],
+    output:
+        report = "{sample}.report.txt",
+        kraken = "{sample}.kraken.out"
+    params:
+        confidence = config["confidence"],
+        db =  "/db" if config["db"] == "default" else config["db"],
+        qual = config["qual"]
+    threads: config["kraken_threads"],
+    shell:
+        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output {output.kraken} {input}"
+
+rule bracken:
+    input:
+        "{sample}.report.txt",
+    output:
+        report = "{sample}.bracken.report.txt",
+        results = "{sample}.bracken.results.txt",
+    params:
+        taxa = config["taxa"],
+        read_length = config["read_length"],
+        db =  "/db" if config["db"] == "default" else config["db"],
+    shell:
+        "bracken -d {params.db} -i {input} -o {output.results} -w {output.report} -r {params.read_length} -l {params.taxa} || touch {output}"

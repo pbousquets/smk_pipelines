@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM broadinstitute/picard:2.27.1
 RUN cd / && \
     apt update && \
     apt-get install curl bzip2 build-essential libncurses5-dev zlib1g-dev libbz2-dev liblzma-dev -y && \
@@ -7,8 +7,12 @@ RUN cd / && \
     cd /samtools-1.15.1  && \
     ./configure  && \
     make  && \
-    make install  && \
-    mkdir /usr/working
+    make install   
+
+RUN apt-get install python3 python3-pip -y && \
+	pip3 install snakemake
+
+RUN pip3 install pandas 
 
 ENV PATH="${PATH}:/bwa-mem2-2.2.1_x64-linux" 
 WORKDIR /usr/working

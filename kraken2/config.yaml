@@ -1,0 +1,9 @@
+confidence: 0.6
+contigs: none
+db: default
+input: /data/personalized_medicine/apps/pipelines/kraken2/file.tsv
+kraken_threads: 10
+qual: 20
+read_length: 150
+taxa: S
+threads: 4
