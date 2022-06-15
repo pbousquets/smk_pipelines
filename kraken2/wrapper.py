@@ -14,7 +14,7 @@ from pathlib import Path
 @click.option('--taxa', default = "S", type = click.Choice(["D","P","C","O","F","G","S","S1"]), help='Taxa for abundance estimation with bracken. Default is S(pecies).')
 @click.option('--read_length',  default=150, help='Read length', type = int)
 @click.option('--qual',  default=20, help='Kraken minimum base quality argument', type = int)
-@click.option('--confidence', default=0.6, help='Kraken confidence argument', type = float)
+@click.option('--confidence', default=0.8, help='Kraken confidence argument', type = float)
 @click.option('--threads', default=4, help='Number of threads per job (4 recommended)', type = int)
 @click.option('--kraken_threads', default=10, help='Number of threads for kraken', type = int)
 @click.option('--cores', default=16, help='Max number of cores provided to snakemake', type = int)

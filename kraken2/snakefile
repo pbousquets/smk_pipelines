@@ -84,7 +84,7 @@ rule kraken:
         qual = config["qual"]
     threads: config["kraken_threads"],
     shell:
-        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output {output.kraken} {input} && touch {output}"
+        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output - {input} && touch {output}"
 
 rule bracken:
     input:
