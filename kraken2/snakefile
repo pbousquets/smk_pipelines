@@ -58,7 +58,7 @@ rule samtools_merge:
         pipe("{sample}.merged.bam")
     threads: config["threads"],
     shell:
-        "samtools merge -u {output} {input.viral} {input.unmapped} -@ {threads}"
+        "samtools merge -n -u {output} {input.viral} {input.unmapped} -@ {threads}"
 
 rule samtools_fastq:
     input:
