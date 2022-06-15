@@ -1,6 +1,0 @@
-input: file.tsv
-db: /db
-threads: 10
-read_length: 150
-db: default 
-contigs: /data/personalized_medicine/ref/chr
