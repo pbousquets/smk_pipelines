@@ -60,7 +60,7 @@ def run(input, db, extra_contigs, read_length, threads, verbose, outdir, qual, c
         try:
             subprocess.check_call(cmd, stdout=log, shell = True)
         except subprocess.CalledProcessError as e:
-            print(f'Error in snakemake invocation: {e}', file=log)
+            print(f'Error in snakemake invocation: {e.decode("utf-8")}', file=log)
             return e.returncode
 
     if clean:
