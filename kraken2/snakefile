@@ -24,13 +24,16 @@ rule all:
         expand("{sample}.bracken.report.txt", sample=df["sample"]),
         expand("{sample}.bracken.results.txt", sample=df["sample"])
 
+
 rule unmapped_reads:
     input:
         unpack(get_bam)
     output:
         pipe('{sample}.unmapped.bam'),
+    threads:
+        config["threads"],
     shell:
-        "samtools view {input.bam} -F 3840 -f 1 -b -o {output} '*'"
+        "samtools view {input.bam} -F 3840 -@ {threads} -f 1 -b -o {output} '*'"
 
 rule viral_contigs:
     input:
@@ -81,7 +84,7 @@ rule kraken:
         qual = config["qual"]
     threads: config["kraken_threads"],
     shell:
-        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output - --classified-out {output.kraken} {input}"
+        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output {output.kraken} {input} && touch {output}"
 
 rule bracken:
     input:
@@ -95,3 +98,4 @@ rule bracken:
         db =  "/db" if config["db"] == "default" else config["db"],
     shell:
         "bracken -d {params.db} -i {input} -o {output.results} -w {output.report} -r {params.read_length} -l {params.taxa} || touch {output}"
+
