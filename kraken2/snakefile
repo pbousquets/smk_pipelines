@@ -77,14 +77,13 @@ rule kraken:
         ["{sample}_1.fastq.gz", "{sample}_2.fastq.gz"],
     output:
         report = "{sample}.report.txt",
-        kraken = "{sample}.kraken.out"
     params:
         confidence = config["confidence"],
         db =  "/db" if config["db"] == "default" else config["db"],
         qual = config["qual"]
     threads: config["kraken_threads"],
     shell:
-        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output - {input} && touch {output}"
+        "kraken2 --use-names --paired --report {output.report} --report-minimizer-data --confidence {params.confidence} --threads {threads} --minimum-base-quality {params.qual} --db {params.db} --output - {input} || touch {output}"
 
 rule bracken:
     input:
