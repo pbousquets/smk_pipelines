@@ -20,7 +20,6 @@ def get_bam(wildcards):
 rule all:
     input:
         expand("{sample}.report.txt", sample=df["sample"]),
-        expand("{sample}.kraken.out", sample=df["sample"]),
         expand("{sample}.bracken.report.txt", sample=df["sample"]),
         expand("{sample}.bracken.results.txt", sample=df["sample"])
 
@@ -47,7 +46,7 @@ rule viral_contigs:
         """
         if [ -f {params.contigs} ]
         then 
-            samtools view {input.bam} -F 3852 --fetch-pairs -@ {threads} $(cat {params.contigs})  | samtools collate -fu -@ {threads} -o {output} - 
+            samtools view {input.bam} -F 3852 --fetch-pairs -@ {threads} $(cat {params.contigs}) -h | samtools collate -fu -@ {threads} -o {output} - 
         else
             samtools view -H {input.bam} -F 3852 --fetch-pairs -@ {threads} -b -o {output}  
         fi
