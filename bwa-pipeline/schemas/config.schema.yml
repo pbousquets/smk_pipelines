@@ -18,10 +18,6 @@ properties:
         type: string
         default: ILLUMINA-NOVASEQ-6000
         description: Name of sequencing platform
-    PU:
-        type: string
-        default: MACROGEN
-        description: Platform Unit
     CN:
         type: string    
         default: MACROGEN
@@ -50,4 +46,3 @@ properties:
 required:
     - input
     - idx
-    - dbsnp

@@ -7,12 +7,17 @@ rule bwa_mem2:
         pipe("{patient}/{sample}/{readgroup}/tmp.bam"),
     params:
         PL = config['PL'],
-        PU = config['PU'],
+        SM = config['SM'],
+        LB= config['LB'],
         CN = config['CN'],
-        rg = r"-R '@RG\tID:{sample}.{readgroup}\tSM:{patient}\tPL:{params.PL}\tPU:{params.PU}\tLB:{sample}\tCN:{params.CN}'", #Keep sample in RG ID to allow the pipeline merge back later
+        ID = r"{readgroup}", #Keep sample in RG ID to allow the pipeline merge back later
     threads: 
         config.get("bwa_threads", 18),
     singularity:
         "docker://labxa/bwamem2",
     shell:
-        "bwa-mem2 mem -t {threads} {params.rg} {input.idx} {input.fastq1} {input.fastq2} > {output} 2>> .logs/bwa.log"
+        """
+        pu=$(zcat {input.fastq1} | head -1 | sed 's/[:].*//' | sed 's/@//') && \ 
+        rg="@RG\\tID:{params.ID}\\tSM:{params.SM}\\tPL:{params.PL}\\tPU:$pu\\tLB:{params.LB}\\tCN:{params.CN}" && \
+        bwa-mem2 mem -t {threads} -R $rg {input.idx} {input.fastq1} {input.fastq2} > {output} 2>> {log}
+        """
