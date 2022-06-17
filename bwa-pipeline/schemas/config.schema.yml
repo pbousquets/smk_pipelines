@@ -22,6 +22,14 @@ properties:
         type: string    
         default: MACROGEN
         description: Platform Center
+    SM:
+        type: string
+        default: Patient1
+        description: Sample ID
+    LB:
+        type: string
+        default: LIB1
+        description: Sample ID
     bwa_threads:
         type: number
         default: 20
