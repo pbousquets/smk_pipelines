@@ -1,2 +1,3 @@
 .snakemake
 bwa_rfcaller_pipeline/test/*gz
+bwa_rfcaller_pipeline/docker_image
