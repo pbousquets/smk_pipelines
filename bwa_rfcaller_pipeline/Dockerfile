@@ -37,8 +37,9 @@ RUN apt-get update && apt-get install -y sambamba
 COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
-RUN cd / && git clone https://github.com/pbousquets/smk_pipelines 
-
+RUN cd / && \ 
+    git clone https://github.com/pbousquets/smk_pipelines 
+RUN pip3 install click
 ## Entrypoint
 ENTRYPOINT ["/smk_pipelines/bwa_rfcaller_pipeline/wrapper.py"]
 ## Set environment
