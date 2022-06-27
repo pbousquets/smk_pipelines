@@ -1,1 +1,2 @@
 .snakemake
+bwa_rfcaller_pipeline/test/*gz

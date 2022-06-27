@@ -1,0 +1,5 @@
+PATIENT	SAMPLE	EXPERIMENT	F1	F2
+1604	1604T	1604T1	myrg1_1.fastq.gz	myrg1_2.fastq.gz
+1604	1604T	1604T1	myrg2_1.fastq.gz	myrg2_2.fastq.gz
+1604	1604N	1604N1	myrg3_1.fastq.gz	myrg3_2.fastq.gz
+1604	1604N	1604N1	myrg4_1.fastq.gz	myrg4_2.fastq.gz
