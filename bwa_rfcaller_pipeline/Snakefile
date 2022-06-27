@@ -8,6 +8,8 @@ import glob
 import pandas as pd
 from snakemake.utils import validate, min_version
 
+## TODO: revisar que el output se genere donde debe y que permita inputs de otros lugares, etc. Probablemente haya que hacer un symlink. Dar la opción de empezar por los bams, en cuyo caso tengo que hacer el symlink 
+
 min_version("5.9.1")
 validate(config, "config.schema.yml")
 
@@ -83,8 +85,8 @@ rule bwa_mem2:
         pipe("{patient}_{sample}_{experiment}_{rg}.bam"),
     params:
         PL = config['PL'],
-        SM = config['SM'], 
-        LB= config['LB'], ##
+        SM = config['SM'],  ## TODO: make automatically
+        LB= config['LB'], ## TODO: make automatically
         CN = config['CN'],
     threads: 
         config.get("threads", 4),

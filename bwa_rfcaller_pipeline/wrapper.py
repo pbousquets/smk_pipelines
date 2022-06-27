@@ -22,21 +22,21 @@ def run_validations(input, comparison, fasta, dbsnp, targets, pon, ploidy, threa
 
     return [ploidy_exists, pon_exists]
 
-@click.command()
+@click.command(context_settings={'show_default': True})
 @click.option('--input', required = True, help='\b\nInput with fastqs metadata. Fields: PATIENT, SAMPLE, EXPERIMENT, F1, F2')
 @click.option('--comparison', required = True, help='\b\nTwo-column file with experiment names for somatic variant calling. Fields: TUMOR_EXPERIMENT, NORMAL_EXPERIMENT')
 @click.option('--fasta', required = True,  help='Path to reference genome fasta')
 @click.option('--dbsnp', required = True,  help='Path to dbsnp')
 @click.argument('targets', nargs=-1, type = click.Choice(["all", "rg_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"], case_sensitive=False))
-@click.option('--PL', default = "ILLUMINA-NOVASEQ-6000", help='Name of the sequencing platform')
+@click.option('--PL', default = "ILLUMINA-NOVASEQ-6000", help='\b\nName of the sequencing platform')
 @click.option('--CN', default = "MACROGEN", help='Name of the platform center')
-@click.option('--PL', default = "SM1", help='Sample ID')
-@click.option('--LB', default = "LB1", help='Library ID')
+@click.option('--SM', default = "SM1", help='Sample ID') ##TODO: remove when implemeted automatically in snakefile
+@click.option('--LB', default = "LB1", help='Library ID') ##TODO: remove when implemeted automatically in snakefile
 @click.option('--pon',  default= "hg38", help='\b\nPanel of normals. hg38 and hg19 are built-in, or path to custom pon', type = str)
-@click.option('--ploidy',  default= "GRCh38", help='Bcftools ploidy file (GRCh38 or GRCh37)', type = str)
+@click.option('--ploidy',  default= "GRCh38", help='\b\nBcftools ploidy file (GRCh38 or GRCh37)', type = str)
 @click.option('--threads', default=24, help='Number of threads per job in BWA',  type = int)
 @click.option('--other_threads', default=5, help='\b\nNumber of threads for minor steps (merge, sort, ...)', type = int)
-@click.option('--cores', default=60, help='Max number of cores provided to snakemake', type = int)
+@click.option('--cores', default=60, help='\b\nMax number of cores provided to snakemake', type = int)
 @click.option('--memory', default=40, help='\b\nMax RAM memory allowed to sort (Gb) per FASTQ pair', type = int)
 @click.option('--max_memory', default=100, help='Max total RAM memory allowed (Gb)', type = int)
 @click.option('--verbose', default = False, help="Increase verbosity",is_flag=True)
