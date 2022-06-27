@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 import click
 import subprocess
-from pyrsistent import s
 import yaml
 from os import remove, mkdir, chdir
 from os.path import dirname, exists
