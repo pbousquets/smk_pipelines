@@ -25,7 +25,7 @@ def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, thre
 
 @click.command(context_settings={'show_default': True})
 @click.option('--fastqs', help='\b\nInput with fastqs metadata. Fields: PATIENT, SAMPLE, EXPERIMENT, F1, F2')
-@click.option('--comparison', required = True, help='\b\nTwo-column file with experiment names for somatic variant calling. Fields: TUMOR_EXPERIMENT, NORMAL_EXPERIMENT')
+@click.option('--comparison', required = True, help='\b\nTwo-column file with experiment names for somatic variant calling. If skipping alignment, add the paths to bam files in the additional fields. Fields: TUMOR_EXPERIMENT, NORMAL_EXPERIMENT [TUMOR_BAM, NORMAL_BAM]')
 @click.option('--fasta', required = True,  help='Path to reference genome fasta')
 @click.option('--dbsnp', required = True,  help='Path to dbsnp')
 @click.argument('targets', nargs=-1, type = click.Choice(["all", "rg_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"], case_sensitive=False))
