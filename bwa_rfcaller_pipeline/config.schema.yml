@@ -5,7 +5,7 @@ description: alignment pipeline configuration file
 type: object
 
 properties:
-    input:
+    fastqs:
         type: string
         description: filepath to TSV file with patient column
     comparison:
@@ -25,14 +25,6 @@ properties:
         type: string    
         default: MACROGEN
         description: Platform Center
-    SM:
-        type: string
-        default: Patient1
-        description: Sample ID
-    LB:
-        type: string
-        default: LIB1
-        description: Sample ID
     pon: 
         type: string
         default: hg38

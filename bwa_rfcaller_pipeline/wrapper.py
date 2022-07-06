@@ -7,8 +7,9 @@ from os.path import dirname, exists
 from pathlib import Path
 
 
-def run_validations(input, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory):
-    assert exists(input), f"MissingFileError: Input file does not exist: {input} \n"
+def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory):
+    if fastqs:
+        assert exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
     assert exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets), f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
     assert exists(fasta), f"MissingFileError: Fasta file does not exist: {fasta} \n"
     assert exists(dsnp), f"dbSNP file does not exist: {dbsnp} \n"
@@ -23,15 +24,13 @@ def run_validations(input, comparison, fasta, dbsnp, targets, pon, ploidy, threa
     return [ploidy_exists, pon_exists]
 
 @click.command(context_settings={'show_default': True})
-@click.option('--input', required = True, help='\b\nInput with fastqs metadata. Fields: PATIENT, SAMPLE, EXPERIMENT, F1, F2')
+@click.option('--fastqs', help='\b\nInput with fastqs metadata. Fields: PATIENT, SAMPLE, EXPERIMENT, F1, F2')
 @click.option('--comparison', required = True, help='\b\nTwo-column file with experiment names for somatic variant calling. Fields: TUMOR_EXPERIMENT, NORMAL_EXPERIMENT')
 @click.option('--fasta', required = True,  help='Path to reference genome fasta')
 @click.option('--dbsnp', required = True,  help='Path to dbsnp')
 @click.argument('targets', nargs=-1, type = click.Choice(["all", "rg_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"], case_sensitive=False))
 @click.option('--PL', default = "ILLUMINA-NOVASEQ-6000", help='\b\nName of the sequencing platform')
 @click.option('--CN', default = "MACROGEN", help='Name of the platform center')
-@click.option('--SM', default = "SM1", help='Sample ID') ##TODO: remove when implemeted automatically in snakefile
-@click.option('--LB', default = "LB1", help='Library ID') ##TODO: remove when implemeted automatically in snakefile
 @click.option('--pon',  default= "hg38", help='\b\nPanel of normals. hg38 and hg19 are built-in, or path to custom pon', type = str)
 @click.option('--ploidy',  default= "GRCh38", help='\b\nBcftools ploidy file (GRCh38 or GRCh37)', type = str)
 @click.option('--threads', default=24, help='Number of threads per job in BWA',  type = int)
@@ -43,37 +42,33 @@ def run_validations(input, comparison, fasta, dbsnp, targets, pon, ploidy, threa
 @click.option('--clean/--no-clean', is_flag=True, default = True, help="\b\nWhether to remove the config file and logs or not")
 @click.option('--outdir', default = ".", help='\b\nOutput directory. If missing, it will be created')
 
-def run(input, comparison, fasta, dbsnp, targets, PL, CN, SM, LB, pon, ploidy, threads, other_threads, cores, memory, max_memory, verbose, clean, outdir):
+def run(fastqs, comparison, fasta, dbsnp, targets, PL, CN, pon, ploidy, threads, other_threads, cores, memory, max_memory, verbose, clean, outdir):
     """Simple wrapper for launching BWA-mem2/RFcaller with snakemake."""
 
-    ploidy_exists, pon_exists = run_validations(input, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
+    ploidy_exists, pon_exists = run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
 
     targets = " ".join(["rg_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
 
     click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
 
     config = {
-        "input": str(Path(input).absolute()),
         "comparison": str(Path(comparison).absolute()),
         "fasta": str(Path(fasta).absolute()),
         "dbsnp": str(Path(dbsnp).absolute()),
         "PL": PL,
-        "SM": SM,
-        "LB": LB,
         "CN": CN,
         "pon": str(Path(pon).absolute()) if pon_exists else pon,
         "ploidy": str(Path(ploidy).absolute()) if ploidy_exists else ploidy,
         "threads": threads,
         "other_threads": other_threads,
-        "memory": memory
+        "memory": memory,
+        "workdir": str(Path(outdir).absolute())
     }
-    
-    snakefile_dir = str(Path(dirname(__file__)).absolute())
 
-    if outdir != ".":
-        if not exists(outdir):
-            mkdir(outdir)
-        chdir(outdir)
+    if fastqs:
+        config["fastqs"] = str(Path(fastqs).absolute())
+
+    snakefile_dir = str(Path(dirname(__file__)).absolute())
 
     f = open('config.yaml', 'w+')
     yaml.dump(config, f)

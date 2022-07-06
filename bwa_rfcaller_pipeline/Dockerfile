@@ -38,8 +38,7 @@ COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
 RUN pip install click
-RUN cd / && \ 
-    git clone https://github.com/pbousquets/smk_pipelines 
+RUN cd / &&  git clone https://github.com/pbousquets/smk_pipelines 
 
 ## Entrypoint
 ENTRYPOINT ["/smk_pipelines/bwa_rfcaller_pipeline/wrapper.py"]
