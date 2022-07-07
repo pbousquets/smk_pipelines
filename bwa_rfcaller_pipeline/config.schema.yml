@@ -47,6 +47,5 @@ properties:
         description: Max memory RAM allowed in Gb
 
 required:
-    - comparison  ##TODO: quitar esto como obligatorio porque se puede correr la pipeline sin RFcaller
     - fasta
     - dbsnp

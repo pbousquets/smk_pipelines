@@ -10,7 +10,7 @@ from pathlib import Path
 def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory):
     if fastqs:
         assert exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
-    assert exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets), f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
+    assert (exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets)) or "rfcaller_vcf" not in targets, f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
     assert exists(fasta), f"MissingFileError: Fasta file does not exist: {fasta} \n"
     assert exists(dbsnp), f"dbSNP file does not exist: {dbsnp} \n"
     assert pon.lower() in ["hg38", "hg19"] or exists(pon), f"PoNError: The pon variable isn't any of hg38 or hg19 and doesn't not exist either: {pon} \n"
