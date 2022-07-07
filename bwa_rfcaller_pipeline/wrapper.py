@@ -76,7 +76,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
 
     f = open('config.yaml', 'w+')
     yaml.dump(config, f)
-    cmd = f"snakemake --snakefile {snakefile_dir}/Snakefile --cores {cores} --resources mem_gb={max_memory} --configfile config.yaml "
+    cmd = f"snakemake --snakefile {snakefile_dir}/Snakefile --cores {cores} --configfile config.yaml --resources mem_gb={max_memory} "
 
     if not verbose:
         cmd += "--quiet "
