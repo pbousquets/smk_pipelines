@@ -47,7 +47,6 @@ properties:
         description: Max memory RAM allowed in Gb
 
 required:
-    - input
     - comparison
     - fasta
     - dbsnp

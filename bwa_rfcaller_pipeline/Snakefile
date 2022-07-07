@@ -34,6 +34,7 @@ comparisons_df = pd.read_csv(config["comparison"], sep = "\t", dtype=str)
 comparisons_df['COMPARISON'] = comparisons_df[["TUMOR_EXPERIMENT", "NORMAL_EXPERIMENT"]].agg('.'.join, axis=1)
 comparisons_df = comparisons_df.set_index(["COMPARISON"], drop=False)
 comparisons_df = comparisons_df.sort_index()
+comparisons_df = comparisons_df.sort_index()
 
 if config["fastqs"]:
     comparisons_df['TUMOR_BAM'] = comparisons_df['TUMOR_EXPERIMENT'].map(expected_final_bam)
@@ -68,7 +69,7 @@ rule rfcaller_vcf:
     input:
         expand("mutations_{comparison}.vcf", comparison = comparisons)
 
-rule rg_bam:
+rule rg_bams:
     input:
         set(expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments))
 
