@@ -17,7 +17,7 @@ COPY docker_image/samtools/ /home/samtools/
 RUN ["/bin/bash", "-c", "cd /home/samtools; for i in htslib-1.10.2 bcftools-1.10.2 samtools-1.10; do tar xvjf ${i}.tar.bz2; cd ${i}; ./configure; make; make install; cd ../; done; cd /home/; rm -rf samtools"]
 
 ## Install bwamem2
-RUN cd /usr/bin && curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2   --output - | tar -jxf -  && cd /
+RUN curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2   --output - | tar -jxf -  
 
 ## Install bedtools
 COPY docker_image/bedtools/ /home/bedtools/
@@ -37,7 +37,7 @@ COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
 RUN pip install click
-RUN echo 2
+RUN echo 1
 RUN cd / && git clone -b dev https://github.com/pbousquets/smk_pipelines 
 
 ## Entrypoint
