@@ -64,7 +64,7 @@ wildcard_constraints:
 ## Targets
 rule rfcaller_vcf:
     input:
-        expand("{comparison}/mutations_{comparison}.vcf", comparison = comparisons)
+        expand("mutations_{comparison}.vcf", comparison = comparisons)
 
 rule rg_bams:
     input:
@@ -205,7 +205,7 @@ rule rfcaller:
         normal = lambda wildcards: comparisons_df.loc[wildcards.comparison, "NORMAL_BAM"],
         fasta = fasta
     output:
-        vcf="{comparison}/mutations_{comparison}.vcf",
+        vcf="mutations_{comparison}.vcf",
     params:
         dbsnp=dbsnp,
         pon=config["pon"],
