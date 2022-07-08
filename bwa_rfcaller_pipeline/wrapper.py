@@ -24,8 +24,8 @@ def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, thre
     return [ploidy_exists, pon_exists]
 
 @click.command(context_settings={'show_default': True})
-@click.option('--fastqs', help='\b\nInput with fastqs metadata. Fields: PATIENT, SAMPLE, EXPERIMENT, F1, F2')
-@click.option('--comparison', required = True, help='\b\nTwo-column file with experiment names for somatic variant calling. If skipping alignment, add the paths to bam files in the additional fields. Fields: TUMOR_EXPERIMENT, NORMAL_EXPERIMENT [TUMOR_BAM, NORMAL_BAM]')
+@click.option('--fastqs', default = "", help='\b\nInput with fastqs metadata. Fields: PATIENT, SAMPLE, EXPERIMENT, F1, F2')
+@click.option('--comparison', default = "", required = True, help='\b\nTwo-column file with experiment names for somatic variant calling. If skipping alignment, add the paths to bam files in the additional fields. Fields: TUMOR_EXPERIMENT, NORMAL_EXPERIMENT [TUMOR_BAM, NORMAL_BAM]')
 @click.option('--fasta', required = True,  help='Path to reference genome fasta')
 @click.option('--dbsnp', required = True,  help='Path to dbsnp')
 @click.option('--outdir', default = ".", help='\b\nOutput directory. If missing, it will be created')
@@ -56,7 +56,8 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
 
     config = {
-        "comparison": str(Path(comparison).absolute()),
+        "fastqs": str(Path(fastqs).absolute()) if fastqs else "",
+        "comparison": str(Path(comparison).absolute()) if comparison else "",
         "fasta": str(Path(fasta).absolute()),
         "dbsnp": str(Path(dbsnp).absolute()),
         "PL": platform,
@@ -68,9 +69,6 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
         "memory": memory,
         "workdir": str(Path(outdir).absolute())
     }
-
-    if fastqs:
-        config["fastqs"] = str(Path(fastqs).absolute())
 
     snakefile_dir = str(Path(dirname(__file__)).absolute())
 
