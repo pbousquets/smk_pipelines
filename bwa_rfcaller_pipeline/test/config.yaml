@@ -1,0 +1,12 @@
+CN: MACROGEN
+PL: ILLUMINA-NOVASEQ-6000
+comparison: /data/personalized_medicine/apps/snakemake_pipelines/bwa_rfcaller_pipeline/test/comparisons
+dbsnp: /data/programs/isabl_demo/data_directory/assemblies/GRCh38/dbsnp/UCSC_dbSNP153Common_hg38_combined.chr.vcf.gz
+fasta: /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa
+fastqs: ''
+memory: 30
+other_threads: 5
+ploidy: GRCh38
+pon: hg38
+threads: 24
+workdir: /data/personalized_medicine/apps/snakemake_pipelines/bwa_rfcaller_pipeline/test

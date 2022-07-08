@@ -8,75 +8,78 @@ import glob
 import pandas as pd
 from snakemake.utils import validate, min_version
 
-## TODO: revisar que el output se genere donde debe y que permita inputs de otros lugares, etc. Probablemente haya que hacer un symlink. Dar la opción de empezar por los bams, en cuyo caso tengo que hacer el symlink 
-
 min_version("5.9.1")
 validate(config, "config.schema.yml")
 
-metadata = pd.read_csv(config["input"], sep = "\t", dtype=str)
-metadata['RG'] = metadata['F1'].apply(lambda x: regex.search("(.*)(?=[._](R)?1\.f(ast)?q(\.gz)?$)", x).group())
-metadata['F1'] = metadata['F1'].apply(lambda x: pathlib.Path(x).absolute())
-metadata['F2'] = metadata['F2'].apply(lambda x: pathlib.Path(x).absolute())
-metadata_by_exp = metadata
-metadata_by_exp["bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('_'.join, axis=1) + ".dups.sorted.bam"
-metadata_by_exp["split"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".splitreads.bam"
-metadata_by_exp["discordant"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".discordant.bam"
-metadata_by_exp["final_bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg('/'.join, axis=1) + ".dups.indelrealigned.bqsr.bam"
-expected_bams = dict(metadata_by_exp.groupby('EXPERIMENT')['bam'].apply(list))
-expected_split = dict(metadata_by_exp.groupby('EXPERIMENT')['split'].apply(list))
-expected_disc = dict(metadata_by_exp.groupby('EXPERIMENT')['discordant'].apply(list))
-expected_final_bam = dict(metadata_by_exp.groupby('EXPERIMENT')['final_bam'].apply(list))
+workdir: config["workdir"]
+patients, samples, experiments, rgs, comparisons = list(), list(), list(),list(), list()
 
-metadata = metadata.set_index(["RG"], drop=False)
+if config["fastqs"]:
+    metadata = pd.read_csv(config["fastqs"], sep = "\t", dtype=str)
+    metadata['RG'] = metadata['F1'].apply(lambda x: regex.search("(.*)(?=[._](R)?1\.f(ast)?q(\.gz)?$)", x).group())
+    metadata['F1'] = metadata['F1'].apply(lambda x: pathlib.Path(x).absolute())
+    metadata['F2'] = metadata['F2'].apply(lambda x: pathlib.Path(x).absolute())
+    metadata["key"] = metadata[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg('_'.join, axis=1)
+    metadata_by_exp = metadata
+    metadata_by_exp["bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('_'.join, axis=1) + ".dups.sorted.bam"
+    metadata_by_exp["split"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".splitreads.bam"
+    metadata_by_exp["discordant"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".discordant.bam"
+    metadata_by_exp["final_bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg('/'.join, axis=1) + ".dups.indelrealigned.bqsr.bam"
+    expected_bams = dict(metadata_by_exp.drop_duplicates(subset = ['EXPERIMENT'], keep = 'first').groupby('EXPERIMENT')['bam'].apply(list))
+    expected_split = dict(metadata_by_exp.drop_duplicates(subset = ['EXPERIMENT'], keep = 'first').groupby('EXPERIMENT')['split'].apply(list))
+    expected_disc = dict(metadata_by_exp.drop_duplicates(subset = ['EXPERIMENT'], keep = 'first').groupby('EXPERIMENT')['discordant'].apply(list))
+    expected_final_bam = dict(metadata_by_exp.drop_duplicates(subset = ['EXPERIMENT'], keep = 'first').groupby('EXPERIMENT')['final_bam'].apply(list))
+    metadata = metadata.set_index(["RG"], drop=False)
+    keys = list(set(metadata.key.tolist()))
+    keys = [key.split("_") for key in keys]
+    patients, samples, experiments =  [item[0] for item in keys], [item[1] for item in keys], [item[2] for item in keys]
+    rgs = metadata.RG.tolist()
 
-comparisons_df = pd.read_csv(config["comparison"], sep = "\t", dtype=str)
-comparisons_df['COMPARISON'] = comparisons_df[["TUMOR_EXPERIMENT", "NORMAL_EXPERIMENT"]].agg('.'.join, axis=1)
-comparisons_df = comparisons_df.set_index(["COMPARISON"], drop=False)
-comparisons_df = comparisons_df.sort_index()
-comparisons_df['tumorbam'] = comparisons_df['TUMOR_EXPERIMENT'].map(expected_final_bam)
-comparisons_df['normalbam'] = comparisons_df['NORMAL_EXPERIMENT'].map(expected_final_bam)
+if config["comparison"]:
+    comparisons_df = pd.read_csv(config["comparison"], sep = "\t", dtype=str)
+    comparisons_df['COMPARISON'] = comparisons_df[["TUMOR_EXPERIMENT", "NORMAL_EXPERIMENT"]].agg('.'.join, axis=1)
+    comparisons_df = comparisons_df.set_index(["COMPARISON"], drop=False).sort_index()
+    comparisons = comparisons_df.COMPARISON.tolist()
 
-## Get unique lists
-patients = metadata.PATIENT.tolist()
-samples = metadata.SAMPLE.tolist()
-experiments = metadata.EXPERIMENT.tolist()
-rgs = metadata.RG.tolist()
-comparisons = comparisons_df.COMPARISON.tolist()
-
+if config["fastqs"] and config["comparison"]:
+    comparisons_df['TUMOR_BAM'] = comparisons_df['TUMOR_EXPERIMENT'].map(expected_final_bam)
+    comparisons_df['NORMAL_BAM'] = comparisons_df['NORMAL_EXPERIMENT'].map(expected_final_bam)
+elif (not config["fastqs"]) and config["comparison"]:
+    assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(comparisons_df.columns), "InputError: TUMOR_BAM and NORMAL_BAM columns expected in the comparison file when fastqs are not used"
 
 fasta = config["fasta"]
-dbsnp = config["dbsnp"] 
+dbsnp = config["dbsnp"]
 
 def get_fastq(wildcards):
-    return {'fastq1' : metadata.loc[(wildcards.rg), 'F1'], 
+    return {'fastq1' : metadata.loc[(wildcards.rg), 'F1'],
             'fastq2' : metadata.loc[(wildcards.rg), 'F2']}
 
 wildcard_constraints:
-    patient='|'.join([x for x in patients]),  
-    sample='|'.join([x for x in samples]),  
-    experiment='|'.join([x for x in experiments]),  
-    rg='|'.join([x for x in rgs]),  
-    comparison='|'.join([x for x in comparisons]),  
+    patient='|'.join([x for x in patients]),
+    sample='|'.join([x for x in samples]),
+    experiment='|'.join([x for x in experiments]),
+    rg='|'.join([x for x in rgs]),
+    comparison='|'.join([x for x in comparisons]),
 
-## Targets 
+## Targets
 rule rfcaller_vcf:
     input:
         expand("mutations_{comparison}.vcf", comparison = comparisons)
 
-rule rg_bam:
+rule rg_bams:
     input:
         set(expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments))
 
 rule discordants_split:
     input:
-        expand("{patient}/{sample}/{experiment}.discordant.bam", zip, patient = patients, sample = samples, experiment = experiments),
-        expand("{patient}/{sample}/{experiment}.split.bam", zip, patient = patients, sample = samples, experiment = experiments)
+        expand("{patient}/{sample}/{experiment}.discordant_reads.bam", zip, patient = patients, sample = samples, experiment = experiments),
+        expand("{patient}/{sample}/{experiment}.split_reads.bam", zip, patient = patients, sample = samples, experiment = experiments)
 
 rule bqsr_bams:
     input:
         expand("{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam", zip,patient = patients, sample = samples, experiment = experiments)
 
-## Rules 
+## Rules
 rule bwa_mem2:
     input:
         unpack(get_fastq),
@@ -85,21 +88,19 @@ rule bwa_mem2:
         pipe("{patient}_{sample}_{experiment}_{rg}.bam"),
     params:
         PL = config['PL'],
-        SM = config['SM'],  ## TODO: make automatically
-        LB= config['LB'], ## TODO: make automatically
         CN = config['CN'],
-    threads: 
+    threads:
         config.get("threads", 4),
     shell:
         """
         id=$(basename {input.fastq1} | grep -oP ".*(?=[._](R)?1\.f(ast)?q(\.gz)?$)");
         pu=$(bash -c "zcat {input.fastq1} | head -1 | sed 's/[:].*//' | sed 's/@//'");
-        rg="@RG\\tID:$id\\tSM:{params.SM}\\tPL:{params.PL}\\tPU:$pu\\tLB:{params.LB}\\tCN:{params.CN}" && \
+        rg="@RG\\tID:$id\\tSM:{wildcards.sample}\\tPL:{params.PL}\\tPU:$pu\\tLB:{wildcards.experiment}\\tCN:{params.CN}" && \
         bwa-mem2 mem -t {threads} -R $rg {input.fasta} {input.fastq1} {input.fastq2} -o {output}
         """
 
 rule MarkDuplicates:
-    input: 
+    input:
         rules.bwa_mem2.output,
     output:
         bam = pipe("{patient}_{sample}_{experiment}_{rg}.dups.bam"),
@@ -109,13 +110,13 @@ rule MarkDuplicates:
         "samblaster --discordantFile {output.discordant} --splitterFile {output.split} --ignoreUnmated -i {input} -o {output.bam}"
 
 rule sort:
-    input: 
+    input:
         rules.MarkDuplicates.output.bam,
     output:
         temp("{patient}_{sample}_{experiment}_{rg}.dups.sorted.bam")
     resources:
         mem_gb=config.get("memory"),
-    threads: 
+    threads:
         config["other_threads"],
     shell:
         "samtools view -b {input} | sambamba sort --nthreads {threads} -l 0 -m {resources.mem_gb}G -o {output} /dev/stdin && rm {output}.bai"
@@ -124,22 +125,20 @@ use rule sort as sort_discordant with:
     input:
         rules.MarkDuplicates.output.discordant,
     output:
-        pipe("{patient}/{sample}/{experiment}/{rg}.discordant.bam")
-    threads: 1
+        temp("{patient}/{sample}/{experiment}/{rg}.discordant.bam")
 
 use rule sort as sort_split with:
     input:
         rules.MarkDuplicates.output.split,
     output:
-        pipe("{patient}/{sample}/{experiment}/{rg}.splitreads.bam")
-    threads: 1 
-    
+        temp("{patient}/{sample}/{experiment}/{rg}.splitreads.bam")
+
 rule samtools_merge:
     input:
         lambda wildcards: expected_bams[wildcards.experiment]
     output:
         temp("{patient}/{sample}/{experiment}.merged.bam")
-    threads: 
+    threads:
         config["other_threads"],
     shell:
         "samtools merge -@ {threads} -l 0 {output} {input} && samtools index -@ {threads} {output}"
@@ -148,40 +147,40 @@ use rule samtools_merge as merge_discordant with:
     input:
         lambda wildcards: expected_disc[wildcards.experiment],
     output:
-        "{patient}/{sample}/{experiment}.discordant.bam"
+        "{patient}/{sample}/{experiment}.discordant_reads.bam"
 
 use rule samtools_merge as merge_split with:
     input:
         lambda wildcards: expected_split[wildcards.experiment],
     output:
-        "{patient}/{sample}/{experiment}.split.bam"
-    
+        "{patient}/{sample}/{experiment}.split_reads.bam"
+
 rule RealignerTargetCreator:
     input:
         bam = expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments),
         dbsnp = dbsnp,
         fasta = fasta
     output:
-        intervals = temp("intervals"),
-        bamlist = temp("list")
-    threads: 
+        intervals = temp("intervals.intervals"),
+        bamlist = temp("bams.list")
+    threads:
         config["other_threads"],
     shell:
-        "echo {input.bam} | tr '\t ' '\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -l {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
+        "echo {input.bam} | tr ' \t ' '\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
 
 rule GenomeAnalysisTK:
     input:
         bam = rules.samtools_merge.output,
-        intervals = "intervals",
+        intervals = rules.RealignerTargetCreator.output.intervals,
         fasta = fasta
     output:
         temp("{patient}/{sample}/{experiment}.merged.indelrealigned.bam")
     shell:
-        "java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T IndelRealigner -I {input.bam} -targetIntervals {input.intervals} -o {output} -R {input.fasta} -compress 0 --disable_bam_indexing"    
+        "java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T IndelRealigner -I {input.bam} -targetIntervals {input.intervals} -o {output} -R {input.fasta} -compress 0 --disable_bam_indexing"
 
 rule BaseRecalibrator:
     input:
-        bam = rules.GenomeAnalysisTK.output, 
+        bam = rules.GenomeAnalysisTK.output,
         dbsnp = dbsnp,
         fasta = fasta
     output:
@@ -199,11 +198,11 @@ rule ApplyBQSR:
         bam = "{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam"
     shell:
         "gatk --java-options '-Dsamjdk.compression_level=1' ApplyBQSR -R {fasta} -I {input.bam} --bqsr-recal-file {input.recal_table} -O {output}"
-    
+
 rule rfcaller:
     input:
-        tumor = lambda wildcards: comparisons_df.loc[wildcards.comparison, "tumorbam"],
-        normal = lambda wildcards: comparisons_df.loc[wildcards.comparison, "normalbam"],
+        tumor = lambda wildcards: comparisons_df.loc[wildcards.comparison, "TUMOR_BAM"],
+        normal = lambda wildcards: comparisons_df.loc[wildcards.comparison, "NORMAL_BAM"],
         fasta = fasta
     output:
         vcf="mutations_{comparison}.vcf",
@@ -213,8 +212,8 @@ rule rfcaller:
         fasta=config["fasta"],
         ploidy_file=config["ploidy"]
     wildcard_constraints:
-        comparison='|'.join([x for x in comparisons]),  
+        comparison='|'.join([x for x in comparisons]),
     threads: config["threads"]
     shell:
-        "RFcaller -@ {threads} -nb {input.normal} -tb {input.tumor} -o {output.vcf} --genome {params.fasta} --dbSNP {params.dbsnp} --ploidy_file {params.ploidy_file} --PoN {params.pon}" 
+        "RFcaller -@ {threads} -nb {input.normal} -tb {input.tumor} -o {wildcards.comparison} --genome {params.fasta} --dbSNP {params.dbsnp} --ploidy_file {params.ploidy_file} --PoN {params.pon} && touch {output.vcf}"
 
