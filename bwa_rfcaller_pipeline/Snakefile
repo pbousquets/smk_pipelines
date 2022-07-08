@@ -64,7 +64,7 @@ wildcard_constraints:
 ## Targets
 rule rfcaller_vcf:
     input:
-        expand("mutations_{comparison}.vcf", comparison = comparisons)
+        expand("{comparison}/mutations_{comparison}.vcf", comparison = comparisons)
 
 rule rg_bams:
     input:
