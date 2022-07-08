@@ -164,7 +164,7 @@ rule RealignerTargetCreator:
         dbsnp = dbsnp,
         fasta = fasta
     output:
-        intervals = temp("intervals"),
+        intervals = temp("intervals.intervals"),
         bamlist = temp("bams.list")
     threads: 
         config["other_threads"],
@@ -174,7 +174,7 @@ rule RealignerTargetCreator:
 rule GenomeAnalysisTK:
     input:
         bam = rules.samtools_merge.output,
-        intervals = "intervals",
+        intervals = rules.RealignerTargetCreator.output.intervals,
         fasta = fasta
     output:
         temp("{patient}/{sample}/{experiment}.merged.indelrealigned.bam")
