@@ -205,7 +205,7 @@ rule rfcaller:
         normal = lambda wildcards: comparisons_df.loc[wildcards.comparison, "NORMAL_BAM"],
         fasta = fasta
     output:
-        vcf="mutations_{comparison}.vcf",
+        vcf="{comparison}/mutations_{comparison}.vcf",
     params:
         dbsnp=dbsnp,
         pon=config["pon"],
@@ -215,5 +215,5 @@ rule rfcaller:
         comparison='|'.join([x for x in comparisons]),
     threads: config["threads"]
     shell:
-        "RFcaller -@ {threads} -nb {input.normal} -tb {input.tumor} -o {output.vcf} --genome {params.fasta} --dbSNP {params.dbsnp} --ploidy_file {params.ploidy_file} --PoN {params.pon}"
+        "RFcaller -@ {threads} -nb {input.normal} -tb {input.tumor} -o {wildcards.comparison} --genome {params.fasta} --dbSNP {params.dbsnp} --ploidy_file {params.ploidy_file} --PoN {params.pon} && touch {output.vcf}"
 
