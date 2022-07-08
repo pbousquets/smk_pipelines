@@ -4,3 +4,4 @@ bwa_rfcaller_pipeline/test/*gz
 bwa_rfcaller_pipeline/docker_image
 bwa_rfcaller_pipeline/test/1604
 bwa_rfcaller_pipeline/test/run.log
+bwa_rfcaller_pipeline/Dockerfile
