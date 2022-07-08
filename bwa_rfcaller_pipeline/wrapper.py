@@ -88,7 +88,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     print(cmd)
 
     log_path = str(Path(outdir).absolute()) + "/run.log"
-    with open(log_path) as log:
+    with open(log_path, "w") as log:
         try:
             if verbose:
                 subprocess.check_call(cmd, shell = True)
