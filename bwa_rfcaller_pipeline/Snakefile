@@ -165,11 +165,11 @@ rule RealignerTargetCreator:
         fasta = fasta
     output:
         intervals = temp("intervals"),
-        bamlist = temp("list")
+        bamlist = temp("bams.list")
     threads: 
         config["other_threads"],
     shell:
-        "echo {input.bam} | tr '\t ' '\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -l {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
+        "echo {input.bam} | tr ' \t ' '\n' | sort | uniq > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
 
 rule GenomeAnalysisTK:
     input:
