@@ -17,7 +17,7 @@ COPY docker_image/samtools/ /home/samtools/
 RUN ["/bin/bash", "-c", "cd /home/samtools; for i in htslib-1.10.2 bcftools-1.10.2 samtools-1.10; do tar xvjf ${i}.tar.bz2; cd ${i}; ./configure; make; make install; cd ../; done; cd /home/; rm -rf samtools"]
 
 ## Install bwamem2
-RUN curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2   --output - | tar -jxf -  
+RUN cd / && curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2   --output - | tar -jxf -  && mv bwa-mem2-2.2.1_x64-linux/bwa-mem2* /usr/bin/. && rm -rf bwa-mem2-2.2.1_x64-linux 
 
 ## Install bedtools
 COPY docker_image/bedtools/ /home/bedtools/

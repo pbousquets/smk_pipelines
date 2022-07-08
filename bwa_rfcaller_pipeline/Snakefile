@@ -128,15 +128,13 @@ use rule sort as sort_discordant with:
     input:
         rules.MarkDuplicates.output.discordant,
     output:
-        pipe("{patient}/{sample}/{experiment}/{rg}.discordant.bam")
-    threads: 1
+        temp("{patient}/{sample}/{experiment}/{rg}.discordant.bam")
 
 use rule sort as sort_split with:
     input:
         rules.MarkDuplicates.output.split,
     output:
-        pipe("{patient}/{sample}/{experiment}/{rg}.splitreads.bam")
-    threads: 1 
+        temp("{patient}/{sample}/{experiment}/{rg}.splitreads.bam")
     
 rule samtools_merge:
     input:
