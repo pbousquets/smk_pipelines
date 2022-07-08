@@ -87,7 +87,8 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     cmd += f"{targets}" 
     print(cmd)
 
-    with open("run.log","w+") as log:
+    log_path = str(Path(outdir).absolute()) + "/run.log"
+    with open(log_path) as log:
         try:
             if verbose:
                 subprocess.check_call(cmd, shell = True)
@@ -102,7 +103,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
 
     if clean:
         remove("config.yaml")
-        remove("run.log")
+        remove(log_path)
 
 if __name__ == '__main__':
     run()
