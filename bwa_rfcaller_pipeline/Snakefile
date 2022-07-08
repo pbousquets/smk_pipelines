@@ -18,6 +18,7 @@ if config["fastqs"]:
     metadata['RG'] = metadata['F1'].apply(lambda x: regex.search("(.*)(?=[._](R)?1\.f(ast)?q(\.gz)?$)", x).group())
     metadata['F1'] = metadata['F1'].apply(lambda x: pathlib.Path(x).absolute())
     metadata['F2'] = metadata['F2'].apply(lambda x: pathlib.Path(x).absolute())
+    metadata["key"] = metadata[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg('_'.join, axis=1)
     metadata_by_exp = metadata
     metadata_by_exp["bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('_'.join, axis=1) + ".dups.sorted.bam"
     metadata_by_exp["split"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".splitreads.bam"
@@ -26,29 +27,24 @@ if config["fastqs"]:
     expected_bams = dict(metadata_by_exp.groupby('EXPERIMENT')['bam'].apply(list))
     expected_split = dict(metadata_by_exp.groupby('EXPERIMENT')['split'].apply(list))
     expected_disc = dict(metadata_by_exp.groupby('EXPERIMENT')['discordant'].apply(list))
-    expected_final_bam = dict(metadata_by_exp.groupby('EXPERIMENT')['final_bam'].apply(list))
+    expected_final_bam = dict(metadata_by_exp.groupby('EXPERIMENT')['final_bam'].apply(list))   
+    metadata = metadata.set_index(["RG"], drop=False)
+    keys = list(set(metadata.key.tolist()))
+    keys = [key.split("_") for key in keys]
+    patients, samples, experiments =  [item[0] for item in keys], [item[1] for item in keys], [item[2] for item in keys]
+    rgs = metadata.RG.tolist()
 
-metadata = metadata.set_index(["RG"], drop=False)
+if config["comparison"]:
+    comparisons_df = pd.read_csv(config["comparison"], sep = "\t", dtype=str)
+    comparisons_df['COMPARISON'] = comparisons_df[["TUMOR_EXPERIMENT", "NORMAL_EXPERIMENT"]].agg('.'.join, axis=1)
+    comparisons_df = comparisons_df.set_index(["COMPARISON"], drop=False).sort_index()
+    comparisons = comparisons_df.COMPARISON.tolist()
 
-comparisons_df = pd.read_csv(config["comparison"], sep = "\t", dtype=str)
-comparisons_df['COMPARISON'] = comparisons_df[["TUMOR_EXPERIMENT", "NORMAL_EXPERIMENT"]].agg('.'.join, axis=1)
-comparisons_df = comparisons_df.set_index(["COMPARISON"], drop=False)
-comparisons_df = comparisons_df.sort_index()
-comparisons_df = comparisons_df.sort_index()
-
-if config["fastqs"]:
+if config["fastqs"] and config["comparison"]:
     comparisons_df['TUMOR_BAM'] = comparisons_df['TUMOR_EXPERIMENT'].map(expected_final_bam)
     comparisons_df['NORMAL_BAM'] = comparisons_df['NORMAL_EXPERIMENT'].map(expected_final_bam)
-else:
+elif (not config["fastqs"]) and config["comparison"]:
     assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(comparisons_df.columns), "InputError: TUMOR_BAM and NORMAL_BAM columns expected in the comparison file when fastqs are not used"
-
-## Get unique lists
-patients = metadata.PATIENT.tolist()
-samples = metadata.SAMPLE.tolist()
-experiments = metadata.EXPERIMENT.tolist()
-rgs = metadata.RG.tolist()
-comparisons = comparisons_df.COMPARISON.tolist()
-
 
 fasta = config["fasta"]
 dbsnp = config["dbsnp"] 
@@ -169,7 +165,7 @@ rule RealignerTargetCreator:
     threads: 
         config["other_threads"],
     shell:
-        "echo {input.bam} | tr ' \t ' '\n' | sort | uniq > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
+        "echo {input.bam} | tr ' \t ' '\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
 
 rule GenomeAnalysisTK:
     input:
