@@ -12,6 +12,7 @@ min_version("5.9.1")
 validate(config, "config.schema.yml")
 
 workdir: config["workdir"]
+patients, samples, experiments, rgs, comparisons = list(), list(), list(),list(), list()
 
 if config["fastqs"]:
     metadata = pd.read_csv(config["fastqs"], sep = "\t", dtype=str)
@@ -43,7 +44,6 @@ if config["comparison"]:
 if config["fastqs"] and config["comparison"]:
     comparisons_df['TUMOR_BAM'] = comparisons_df['TUMOR_EXPERIMENT'].map(expected_final_bam)
     comparisons_df['NORMAL_BAM'] = comparisons_df['NORMAL_EXPERIMENT'].map(expected_final_bam)
-
 elif (not config["fastqs"]) and config["comparison"]:
     assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(comparisons_df.columns), "InputError: TUMOR_BAM and NORMAL_BAM columns expected in the comparison file when fastqs are not used"
 

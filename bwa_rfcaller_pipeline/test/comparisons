@@ -1,2 +1,2 @@
-TUMOR_EXPERIMENT	NORMAL_EXPERIMENT	TUMOR_BAM	NORMAL_BAM
-1604T1	1604N1	/data/programs/snakemake_pipelines/bwa_rfcaller_pipeline/test/1604/1604T1.dups.indelrealigned.bqsr.bam	/data/programs/snakemake_pipelines/bwa_rfcaller_pipeline/test/1604/1604N1.dups.indelrealigned.bqsr.bam
+TUMOR_EXPERIMENT	NORMAL_EXPERIMENT
+1604T1	1604N1
