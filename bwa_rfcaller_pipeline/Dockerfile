@@ -37,7 +37,7 @@ COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
 RUN pip install click
-RUN echo .....
+RUN echo ......
 RUN cd / && git clone -b dev https://github.com/pbousquets/smk_pipelines 
 
 ## Entrypoint
