@@ -1,9 +1,5 @@
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
@@ -13,7 +9,7 @@
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
@@ -26,55 +22,12 @@
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
@@ -93,6 +46,53 @@
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] 2 samples in 2 input files
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
@@ -104,11 +104,6 @@
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
-[mpileup] maximum number of reads per input file set to -d 250
-[mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
@@ -122,14 +117,19 @@
 [mpileup] 2 samples in 2 input files
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
+[mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
-Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 [mpileup] 2 samples in 2 input files
 [mpileup] maximum number of reads per input file set to -d 250
 Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 [mpileup] 2 samples in 2 input files
+Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] 2 samples in 2 input files
+[mpileup] 2 samples in 2 input files
+[mpileup] maximum number of reads per input file set to -d 250
+[mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
@@ -143,77 +143,77 @@ Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all site
 [mpileup] maximum number of reads per input file set to -d 250
 [mpileup] maximum number of reads per input file set to -d 250
 Checking the headers and starting positions of 71 files
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr1:1-50000000.bcf	0.009758 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr1:50000001-100000000.bcf	0.004346 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr1:100000001-150000000.bcf	0.004578 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr1:150000001-200000000.bcf	0.004596 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr1:200000001-248956422.bcf	0.004310 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr2:1-50000000.bcf	0.004332 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr2:50000001-100000000.bcf	0.004301 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr2:100000001-150000000.bcf	0.004296 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr2:150000001-200000000.bcf	0.004323 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr2:200000001-242193529.bcf	0.004310 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr3:1-50000000.bcf	0.004294 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr3:50000001-100000000.bcf	0.004310 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr3:100000001-150000000.bcf	0.004320 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr3:150000001-198295559.bcf	0.004315 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr4:1-50000000.bcf	0.004304 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr4:50000001-100000000.bcf	0.004319 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr4:100000001-150000000.bcf	0.004087 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr4:150000001-190214555.bcf	0.004315 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr5:1-50000000.bcf	0.004304 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr5:50000001-100000000.bcf	0.004315 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr5:100000001-150000000.bcf	0.004294 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr5:150000001-181538259.bcf	0.004306 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr6:1-50000000.bcf	0.004394 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr6:50000001-100000000.bcf	0.004317 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr6:100000001-150000000.bcf	0.004311 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr6:150000001-170805979.bcf	0.004317 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr7:1-50000000.bcf	0.004299 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr7:50000001-100000000.bcf	0.004324 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr7:100000001-150000000.bcf	0.004325 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr7:150000001-159345973.bcf	0.004087 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr8:1-50000000.bcf	0.004310 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr8:50000001-100000000.bcf	0.004389 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr8:100000001-145138636.bcf	0.004409 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr9:1-50000000.bcf	0.004311 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr9:50000001-100000000.bcf	0.004322 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr9:100000001-138394717.bcf	0.004083 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr10:1-50000000.bcf	0.004327 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr10:50000001-100000000.bcf	0.004291 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr10:100000001-133797422.bcf	0.004328 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr11:1-50000000.bcf	0.004295 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr11:50000001-100000000.bcf	0.004308 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr11:100000001-135086622.bcf	0.004307 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr12:1-50000000.bcf	0.004320 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr12:50000001-100000000.bcf	0.004336 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr12:100000001-133275309.bcf	0.004309 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr13:1-50000000.bcf	0.004180 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr13:50000001-100000000.bcf	0.004389 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr13:100000001-114364328.bcf	0.004077 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr14:1-50000000.bcf	0.004318 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr14:50000001-100000000.bcf	0.004415 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr14:100000001-107043718.bcf	0.004223 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr15:1-50000000.bcf	0.004419 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr15:50000001-101991189.bcf	0.004443 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr16:1-50000000.bcf	0.004419 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr16:50000001-90338345.bcf	0.004396 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr17:1-50000000.bcf	0.004399 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr17:50000001-83257441.bcf	0.004413 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr18:1-50000000.bcf	0.004175 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr18:50000001-80373285.bcf	0.004423 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr19:1-50000000.bcf	0.004398 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr19:50000001-58617616.bcf	0.004389 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr20:1-50000000.bcf	0.004472 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr20:50000001-64444167.bcf	0.004345 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr21:1-46709983.bcf	0.004331 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chr22:1-50818468.bcf	0.004350 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chrX:1-50000000.bcf	0.004383 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chrX:50000001-100000000.bcf	0.004302 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chrX:100000001-150000000.bcf	0.004319 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chrX:150000001-156040895.bcf	0.004081 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chrY:1-50000000.bcf	0.004166 seconds
-Concatenating mutations_1604T1.1604N1.vcf/calling/tmp/chrY:50000001-57227415.bcf	0.004200 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr1:1-50000000.bcf	0.009713 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr1:50000001-100000000.bcf	0.004527 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr1:100000001-150000000.bcf	0.004729 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr1:150000001-200000000.bcf	0.004633 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr1:200000001-248956422.bcf	0.004588 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr2:1-50000000.bcf	0.004499 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr2:50000001-100000000.bcf	0.004306 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr2:100000001-150000000.bcf	0.004309 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr2:150000001-200000000.bcf	0.004334 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr2:200000001-242193529.bcf	0.004314 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr3:1-50000000.bcf	0.004314 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr3:50000001-100000000.bcf	0.004311 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr3:100000001-150000000.bcf	0.004318 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr3:150000001-198295559.bcf	0.004322 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr4:1-50000000.bcf	0.004389 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr4:50000001-100000000.bcf	0.004313 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr4:100000001-150000000.bcf	0.004081 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr4:150000001-190214555.bcf	0.004311 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr5:1-50000000.bcf	0.004302 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr5:50000001-100000000.bcf	0.004311 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr5:100000001-150000000.bcf	0.004298 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr5:150000001-181538259.bcf	0.004309 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr6:1-50000000.bcf	0.004394 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr6:50000001-100000000.bcf	0.004387 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr6:100000001-150000000.bcf	0.004316 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr6:150000001-170805979.bcf	0.004332 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr7:1-50000000.bcf	0.004319 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr7:50000001-100000000.bcf	0.004437 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr7:100000001-150000000.bcf	0.004384 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr7:150000001-159345973.bcf	0.004070 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr8:1-50000000.bcf	0.004306 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr8:50000001-100000000.bcf	0.004321 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr8:100000001-145138636.bcf	0.004334 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr9:1-50000000.bcf	0.004313 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr9:50000001-100000000.bcf	0.004329 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr9:100000001-138394717.bcf	0.004084 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr10:1-50000000.bcf	0.004340 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr10:50000001-100000000.bcf	0.004307 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr10:100000001-133797422.bcf	0.004335 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr11:1-50000000.bcf	0.004304 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr11:50000001-100000000.bcf	0.004421 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr11:100000001-135086622.bcf	0.004313 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr12:1-50000000.bcf	0.004308 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr12:50000001-100000000.bcf	0.004301 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr12:100000001-133275309.bcf	0.004310 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr13:1-50000000.bcf	0.004171 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr13:50000001-100000000.bcf	0.004532 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr13:100000001-114364328.bcf	0.004146 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr14:1-50000000.bcf	0.004384 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr14:50000001-100000000.bcf	0.004354 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr14:100000001-107043718.bcf	0.004167 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr15:1-50000000.bcf	0.004409 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr15:50000001-101991189.bcf	0.004324 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr16:1-50000000.bcf	0.004402 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr16:50000001-90338345.bcf	0.004316 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr17:1-50000000.bcf	0.004305 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr17:50000001-83257441.bcf	0.004335 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr18:1-50000000.bcf	0.004079 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr18:50000001-80373285.bcf	0.004334 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr19:1-50000000.bcf	0.004314 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr19:50000001-58617616.bcf	0.004315 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr20:1-50000000.bcf	0.004474 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr20:50000001-64444167.bcf	0.004175 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr21:1-46709983.bcf	0.004300 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chr22:1-50818468.bcf	0.004427 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chrX:1-50000000.bcf	0.004321 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chrX:50000001-100000000.bcf	0.004483 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chrX:100000001-150000000.bcf	0.004322 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chrX:150000001-156040895.bcf	0.004087 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chrY:1-50000000.bcf	0.004084 seconds
+Concatenating 1604T1.1604N1/calling/tmp/chrY:50000001-57227415.bcf	0.004090 seconds
 Checking the headers and starting positions of 2 files
 [bam_sort_core] merging from 0 files and 6 in-memory blocks...
 [bam_sort_core] merging from 0 files and 6 in-memory blocks...
@@ -251,7 +251,7 @@ Error: line number 2876 of file /dev/fd/63 has 4 fields, but 3 were expected.
 CMV	1	235646
 
 Error: line number 2876 of file /dev/fd/63 has 4 fields, but 3 were expected.
-mv: cannot stat 'mutations_1604T1.1604N1.vcf/mutations_mutations_1604T1.1604N1.vcf.vcf': No such file or directory
-/home/RFcaller/scripts/RFcaller: line 385: /data/programs/snakemake_pipelines/bwa_rfcaller_pipeline/test/mutations_1604T1.1604N1.vcf/mutations_1604T1.1604N1.vcf_RFcaller.log: No such file or directory
-cat: mutations_1604T1.1604N1.vcf/mutations_1604T1.1604N1.vcf_RFcaller.log: No such file or directory
-rm: cannot remove 'mutations_1604T1.1604N1.vcf/mutations_1604T1.1604N1.vcf_RFcaller.log': No such file or directory
+mv: cannot stat '1604T1.1604N1/mutations_1604T1.1604N1.vcf': No such file or directory
+/home/RFcaller/scripts/RFcaller: line 385: /data/programs/snakemake_pipelines/bwa_rfcaller_pipeline/test/1604T1.1604N1/1604T1.1604N1_RFcaller.log: No such file or directory
+cat: 1604T1.1604N1/1604T1.1604N1_RFcaller.log: No such file or directory
+rm: cannot remove '1604T1.1604N1/1604T1.1604N1_RFcaller.log': No such file or directory

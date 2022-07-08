@@ -1,0 +1,57 @@
+
+
+
+
+2022-07-08  12:40 // ############   Starting RFcaller pipeline   ############
+
+2022-07-08  12:40 // USER COMMAND: RFcaller -@ 24 --normal normal --normalBam 1604/1604N/1604N1.dups.indelrealigned.bqsr.bam --tumor tumor --tumorBam 1604/1604T/1604T1.dups.indelrealigned.bqsr.bam --output 1604T1.1604N1 --genome /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa --dbSNP /data/programs/isabl_demo/data_directory/assemblies/GRCh38/dbsnp/UCSC_dbSNP153Common_hg38_combined.chr.vcf.gz --ploidy_file GRCh38  --PoN /home/databases/PoN/PanelOfNormals_hg38.tsv.gz --contamination 0.05  --TD_cov_SNV 7 --TD_cov_INDEL 7 --ND_cov_SNV 7 --ND_cov_INDEL 7 --TD_mut_SNV 3 --TD_mut_INDEL 4 --ND_mut_SNV 3 --ND_mut_INDEL 2 --ND_window 10 --SNV_threshold 10.726 --INDEL_threshold 32.1418 --polyINDEL_threshold 0.7723
+
+2022-07-08  12:40 // ***** Starting case 1604T1.1604N1 in /data/programs/snakemake_pipelines/bwa_rfcaller_pipeline/test/1604T1.1604N1 *****
+2022-07-08  12:40 // ** 1604T1.1604N1 is going to be analyzed using ZERO pipeline **
+2022-07-08  12:40 // Getting the VCF with mutations to analyze
+2022-07-08  12:40 // -- Extracting variants from Normal and Tumor BAM. This may take a while...
+2022-07-08  12:40 // ---- COMMAND: bcftools mpileup -Q 20 -B --ignore-RG -a 'DP,AD,ADF,ADR,SP' -d 250 -O u -f /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -r i 1604/1604N/1604N1.dups.indelrealigned.bqsr.bam 1604/1604T/1604T1.dups.indelrealigned.bqsr.bam| bcftools call -vmO u -o 1604T1.1604N1/calling/tmp/i.bcf -P 1e-1 --ploidy GRCh38
+2022-07-08  12:41 // -- Merging BCFs
+2022-07-08  12:41 // ---- COMMAND: bcftools concat --threads 24 -O z -o 1604T1.1604N1/calling/1604T1.1604N1.vcf.gz 1604T1.1604N1/calling/tmp/*.bcf
+2022-07-08  12:41 // ------ RESULT: There are 2214 mutations to analyze
+2022-07-08  12:41 // Filtering the VCF
+2022-07-08  12:41 // -- Normalizing indels
+2022-07-08  12:41 // ---- COMMAND: bcftools norm --threads 24 -f /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -c w -O z -o 1604T1.1604N1/calling/1604T1.1604N1.norm.vcf.gz 1604T1.1604N1/calling/1604T1.1604N1.vcf.gz
+2022-07-08  12:41 // ------ RESULT: Lines   total/split/realigned/skipped:	2214/0/280/0
+2022-07-08  12:41 // -- Filtering SNPs and very low confident positions
+2022-07-08  12:41 // ---- COMMAND: bcftools annotate --threads 24 -a /data/programs/isabl_demo/data_directory/assemblies/GRCh38/dbsnp/UCSC_dbSNP153Common_hg38_combined.chr.vcf.gz -O u -c CHROM,POS,ID,REF,ALT,-,-,- 1604T1.1604N1/calling/1604T1.1604N1.norm.vcf.gz |bcftools annotate --threads 24 -a /home/databases/PoN/PanelOfNormals_hg38.tsv.gz -O u -c CHROM,FROM,TO,ID - |bcftools filter -g 5 -i 'FORMAT/DP[0]>=5 && FORMAT/DP[1]>=5' -O u - |bcftools filter -i 'ID=="." & FORMAT/AD[0:1]<=10 && FORMAT/AD[1:1]>=3' - |bcftools filter -e 'FORMAT/GT="mis"' -O z -o 1604T1.1604N1/calling/1604T1.1604N1.filter.norm.vcf.gz -
+2022-07-08  12:41 // ------ RESULT: 2020 positions have been filtered. 194 mutations remaining
+2022-07-08  12:41 // -- Splitting substitutions and INDELs to independent files
+2022-07-08  12:41 // ---- RESULT: There are 167 SNVs and 21 INDELs with enough quality
+2022-07-08  12:41 // #######   Looking for SNVs   #######
+2022-07-08  12:41 // -- Extracting a reduced BAM with only readings overlapping mutations
+2022-07-08  12:41 // ---- COMMAND: samtools view -u -T /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -G 0x400 1604/1604N/1604N1.dups.indelrealigned.bqsr.bam REGIONS >>1604T1.1604N1/somaticSNV/tmp_normal/tmp_reduce_normal.bam
+2022-07-08  12:41 // ---- COMMAND: samtools view -u -T /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -G 0x400 1604/1604T/1604T1.dups.indelrealigned.bqsr.bam REGIONS >>1604T1.1604N1/somaticSNV/tmp_tumor/tmp_reduce_tumor.bam
+2022-07-08  12:41 // ---- Removing duplicates reads for tumor
+2022-07-08  12:41 // ------ COMMAND: samtools sort -@ 6 -n -O SAM 1604T1.1604N1/somaticSNV/tmp/tmp_reduce_tumor.sam |removeOverlapping.py |samtools sort -@ 6 -o 1604T1.1604N1/somaticSNV/reduced_tumor.bam -
+2022-07-08  12:41 // ---- Removing duplicates reads for normal
+2022-07-08  12:41 // ------ COMMAND: samtools sort -@ 6 -n -O SAM 1604T1.1604N1/somaticSNV/tmp/tmp_reduce_normal.sam |removeOverlapping.py |samtools sort -@ 6 -o 1604T1.1604N1/somaticSNV/reduced_normal.bam -
+2022-07-08  12:41 // Processing SNVs
+2022-07-08  12:41 // -- Extracting the mini.pileup. This may take a while...
+2022-07-08  12:41 // ---- COMMAND: samtools mpileup -aa -R -B -q 30/20 -Q 20/10 -C 50 -s -O -f /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -l 1604T1.1604N1/somaticSNV/reduced.positions 1604T1.1604N1/somaticSNV/reduced_tumor.bam 1604T1.1604N1/somaticSNV/reduced_normal.bam |awk '$3!="*"' |filterMP.py -i - -Tcov 7 -Ncov 7 -Tmut 3 -Nmut 3 --output_dir 1604T1.1604N1/somaticSNV --output_name 1604T1.1604N1 --ND_name normal --TD_name tumor --sex F --reads_length 152 --contamination 0.05 >1604T1.1604N1/somaticSNV/1604T1.1604N1.mini.pileup.vcf
+2022-07-08  12:41 // ------ RESULT: 0 SNVs remaining
+2022-07-08  12:41 // WARNING: All SNVs have been filtered
+2022-07-08  12:41 // #######   Looking for INDELs   #######
+2022-07-08  12:41 // -- Extracting a reduced BAM with only readings overlapping mutations
+2022-07-08  12:41 // ---- COMMAND: samtools view -u -T /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -G 0x400 1604/1604N/1604N1.dups.indelrealigned.bqsr.bam REGIONS >>1604T1.1604N1/somaticINDEL/tmp_normal/tmp_reduce_normal.bam
+2022-07-08  12:41 // ---- COMMAND: samtools view -u -T /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -G 0x400 1604/1604T/1604T1.dups.indelrealigned.bqsr.bam REGIONS >>1604T1.1604N1/somaticINDEL/tmp_tumor/tmp_reduce_tumor.bam
+2022-07-08  12:41 // ---- Removing duplicates reads for tumor
+2022-07-08  12:41 // ------ COMMAND: samtools sort -@ 6 -n -O SAM 1604T1.1604N1/somaticINDEL/tmp/tmp_reduce_tumor.sam |removeOverlapping.py |samtools sort -@ 6 -o 1604T1.1604N1/somaticINDEL/reduced_tumor.bam -
+2022-07-08  12:41 // ---- Removing duplicates reads for normal
+2022-07-08  12:41 // ------ COMMAND: samtools sort -@ 6 -n -O SAM 1604T1.1604N1/somaticINDEL/tmp/tmp_reduce_normal.sam |removeOverlapping.py |samtools sort -@ 6 -o 1604T1.1604N1/somaticINDEL/reduced_normal.bam -
+2022-07-08  12:41 // Processing INDELs
+2022-07-08  12:41 // -- Extracting the indel.mini.pileup. This may take a while...
+2022-07-08  12:41 // ---- COMMAND: samtools mpileup -aa -R -q 40/30 -Q 20/10 -C 50 -s -O -f /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -l 1604T1.1604N1/somaticINDEL/reduced.positions 1604T1.1604N1/somaticINDEL/reduced_tumor.bam 1604T1.1604N1/somaticINDEL/reduced_normal.bam |awk '$3!="*"' |filterMPindels.py -i - -f /data/programs/isabl_demo/data_directory/assemblies/GRCh38/genome_fasta/GRCh38.d1.vd1.fa -Tcov 7 -Ncov 7 -Tmut 4 -Nmut 2 --output_dir 1604T1.1604N1/somaticINDEL/ --output_name 1604T1.1604N1 --ND_name normal --TD_name tumor --sex F --reads_length 152 --contamination 0.05 >1604T1.1604N1/somaticINDEL/1604T1.1604N1.mini.pileup.vcf
+2022-07-08  12:41 // ------ RESULT: 0 INDELs remaining
+2022-07-08  12:41 // WARNING: All INDELs have been filtered
+2022-07-08  12:41 // No mutations have been found for 1604T1.1604N1
+2022-07-08  12:41 // Removing intermediate files
+2022-07-08  12:41 // ***** Case 1604T1.1604N1 has finished *****
+
+
+
