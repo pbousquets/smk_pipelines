@@ -20,8 +20,8 @@ RUN ["/bin/bash", "-c", "cd /home/samtools; for i in htslib-1.10.2 bcftools-1.10
 RUN cd / && curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2   --output - | tar -jxf -  && mv bwa-mem2-2.2.1_x64-linux/bwa-mem2* /usr/bin/. && rm -rf bwa-mem2-2.2.1_x64-linux 
 
 ## Install bedtools
-COPY docker_image/bedtools/ /home/bedtools/
-RUN ["/bin/bash", "-c", "cp /home/bedtools/* /usr/local/bin; rm -rf /home/bedtools"]
+COPY docker_image/bedtools/* /usr/local/bin/
+#RUN ["/bin/bash", "-c", "cp /home/bedtools/* /usr/local/bin; rm -rf /home/bedtools"]
 
 ## Install samblaster
 RUN wget https://github.com/GregoryFaust/samblaster/releases/download/v.0.1.26/samblaster-v.0.1.26.tar.gz && \
@@ -37,7 +37,7 @@ COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
 RUN pip install click
-RUN echo .......
+RUN echo ........
 RUN cd / && git clone -b dev https://github.com/pbousquets/smk_pipelines 
 
 ## Entrypoint

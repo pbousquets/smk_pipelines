@@ -44,14 +44,15 @@ def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, thre
 @click.option('--verbose', default = False, help="Increase verbosity",is_flag=True)
 @click.option('--clean/--no-clean', is_flag=True, default = True, help="\b\nWhether to remove the config file and logs or not")
 @click.option('--dryrun', is_flag=True, default = False, help="\b\nMake validations only and launch snakemake in dry-run mode")
-@click.argument('targets', nargs=-1, type = click.Choice(["all", "rg_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"], case_sensitive=False))
+@click.argument('targets', nargs=-1, type = click.Choice(["all", "merged_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"], case_sensitive=False))
 
 def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy, threads, other_threads, cores, memory, max_memory, verbose, clean, dryrun, outdir):
     """Simple wrapper for launching BWA-mem2/RFcaller with snakemake."""
 
     ploidy_exists, pon_exists = run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
 
-    targets = " ".join(["rg_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
+    targets = " ".join(["merged_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
+    keep = True if "merged_bams" in targets else False
 
     click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
 
@@ -67,6 +68,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
         "threads": threads,
         "other_threads": other_threads,
         "memory": memory,
+        "keep_merged": keep,
         "workdir": str(Path(outdir).absolute())
     }
 

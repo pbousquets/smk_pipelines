@@ -49,7 +49,7 @@ elif (not config["fastqs"]) and config["comparison"]:
 
 fasta = config["fasta"]
 dbsnp = config["dbsnp"]
-
+ 
 def get_fastq(wildcards):
     return {'fastq1' : metadata.loc[(wildcards.rg), 'F1'],
             'fastq2' : metadata.loc[(wildcards.rg), 'F2']}
@@ -61,12 +61,18 @@ wildcard_constraints:
     rg='|'.join([x for x in rgs]),
     comparison='|'.join([x for x in comparisons]),
 
+
+if config["keep_merged"] == False:
+    ruleorder: samtools_merge > samtools_merge_keep
+else:
+    ruleorder: samtools_merge_keep > samtools_merge
+
 ## Targets
 rule rfcaller_vcf:
     input:
         expand("mutations_{comparison}.vcf", comparison = comparisons)
 
-rule rg_bams:
+rule merged_bams:
     input:
         set(expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments))
 
@@ -142,6 +148,10 @@ rule samtools_merge:
         config["other_threads"],
     shell:
         "samtools merge -@ {threads} -l 0 {output} {input} && samtools index -@ {threads} {output}"
+
+use rule samtools_merge as samtools_merge_keep with:
+    output:
+        "{patient}/{sample}/{experiment}.merged.bam"
 
 use rule samtools_merge as merge_discordant with:
     input:
