@@ -88,10 +88,10 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     }
 
     snakefile_dir = str(Path(dirname(__file__)).absolute())
-    
-    f = open(outdir +'/config.yaml', 'w+')
+    config = outdir +'/config.yaml'
+    f = open(config, 'w+')
     yaml.dump(config, f)
-    cmd = f"snakemake --snakefile {snakefile_dir}/Snakefile --configfile config.yaml --resources mem_gb={max_memory} --cores {cores} "
+    cmd = f"snakemake --snakefile {snakefile_dir}/Snakefile --configfile {config} --resources mem_gb={max_memory} --cores {cores} "
 
     if not verbose:
         cmd += "--quiet "
