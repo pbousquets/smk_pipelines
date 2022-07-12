@@ -8,8 +8,7 @@ from pathlib import Path
 
 
 def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory):
-    if fastqs:
-        assert exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
+    assert not fastqs or exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
     assert (exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets)) or "rfcaller_vcf" not in targets, f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
     assert exists(fasta), f"MissingFileError: Fasta file does not exist: {fasta} \n"
     assert exists(dbsnp), f"dbSNP file does not exist: {dbsnp} \n"
@@ -44,14 +43,14 @@ def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, thre
 @click.option('--verbose', default = False, help="Increase verbosity",is_flag=True)
 @click.option('--clean/--no-clean', is_flag=True, default = True, help="\b\nWhether to remove the config file and logs or not")
 @click.option('--dryrun', is_flag=True, default = False, help="\b\nMake validations only and launch snakemake in dry-run mode")
-@click.argument('targets', nargs=-1, type = click.Choice(["all", "merged_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"], case_sensitive=False))
+@click.argument('targets', nargs=-1, type = click.Choice(["all", "merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"], case_sensitive=False))
 
 def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy, threads, other_threads, cores, memory, max_memory, verbose, clean, dryrun, outdir):
     """Simple wrapper for launching BWA-mem2/RFcaller with snakemake."""
 
     ploidy_exists, pon_exists = run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
 
-    targets = " ".join(["merged_bams", "discordants_split", "bqsr_bams", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
+    targets = " ".join(["merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
     keep = True if "merged_bams" in targets else False
 
     click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
