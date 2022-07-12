@@ -190,7 +190,7 @@ rule RealignerTargetCreator:
         dbsnp = dbsnp,
         fasta = fasta
     output:
-        intervals = temp("intervals.intervals"),
+        intervals = "intervals.intervals",
         bamlist = temp("bams.list")
     threads:
         config["other_threads"],
