@@ -10,6 +10,9 @@ import pandas as pd
 def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory):
     assert not fastqs or exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
     assert (exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets)) or "rfcaller_vcf" not in targets, f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
+    if comparison and not fastqs:
+        metadata = pd.read_csv(str(Path(comparison).absolute()), sep = "\t", dtype=str)
+        assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(metadata.columns), "Error. TUMOR_BAM and NORMAL_BAM expected in comparison file when no fastq file is provided"
     assert exists(fasta), f"MissingFileError: Fasta file does not exist: {fasta} \n"
     assert exists(dbsnp), f"dbSNP file does not exist: {dbsnp} \n"
     assert pon.lower() in ["hg38", "hg19"] or exists(pon), f"PoNError: The pon variable isn't any of hg38 or hg19 and doesn't not exist either: {pon} \n"
@@ -58,17 +61,6 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
         click.echo(f"{outdir} directory wasn't found -- Generating it")
         makedirs(outdir, parents=True, exist_ok=True)
 
-    if fastqs:
-        metadata = pd.read_csv(str(Path(fastqs).absolute()), sep = "\t", dtype=str)
-        metadata[["F1", "F2"]] = metadata[["F1", "F2"]].apply(lambda x: list(map(abspath, x)), axis = 1).tolist()
-        metadata.to_csv(f"{outdir}/input")
-
-    if comparison and not fastqs:
-        metadata = pd.read_csv(str(Path(comparison).absolute()), sep = "\t", dtype=str)
-        assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(metadata.columns), "Error. TUMOR_BAM and NORMAL_BAM expected in comparison file when no fastq file is provided"
-        metadata[["TUMOR_BAM", "NORMAL_BAM"]] = metadata[["TUMOR_BAM", "NORMAL_BAM"]].apply(lambda x: list(map(abspath, x)), axis = 1).tolist()
-        metadata.to_csv(f"{outdir}/comparison")
-
     click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
     
     config = {
@@ -90,7 +82,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     snakefile_dir = str(Path(dirname(__file__)).absolute())
     config_path = outdir +'/config.yaml'
     yaml.dump(config, open(config_path, 'w+'))
-    
+
     cmd = f"snakemake --snakefile {snakefile_dir}/Snakefile --configfile {config_path} --resources mem_gb={max_memory} --cores {cores} "
 
     if not verbose:
