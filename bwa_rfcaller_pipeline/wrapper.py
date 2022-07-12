@@ -2,10 +2,10 @@
 import click
 import subprocess
 import yaml
-from os import remove, mkdir, chdir
-from os.path import dirname, exists
+from os import remove, makedirs
+from os.path import dirname, exists, abspath
 from pathlib import Path
-
+import pandas as pd
 
 def run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory):
     assert not fastqs or exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
@@ -53,8 +53,24 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     targets = " ".join(["merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
     keep = True if "merged_bams" in targets else False
 
-    click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
+    outdir = str(Path(outdir).absolute())
+    if not exists(outdir):
+        click.echo(f"{outdir} directory wasn't found -- Generating it")
+        makedirs(outdir, parents=True, exist_ok=True)
 
+    if fastqs:
+        metadata = pd.read_csv(str(Path(fastqs).absolute()), sep = "\t", dtype=str)
+        metadata[["F1", "F2"]] = metadata[["F1", "F2"]].apply(lambda x: list(map(abspath, x)), axis = 1).tolist()
+        metadata.to_csv(f"{outdir}/input")
+
+    if comparison and not fastqs:
+        metadata = pd.read_csv(str(Path(comparison).absolute()), sep = "\t", dtype=str)
+        assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(metadata.columns), "Error. TUMOR_BAM and NORMAL_BAM expected in comparison file when no fastq file is provided"
+        metadata[["TUMOR_BAM", "NORMAL_BAM"]] = metadata[["TUMOR_BAM", "NORMAL_BAM"]].apply(lambda x: list(map(abspath, x)), axis = 1).tolist()
+        metadata.to_csv(f"{outdir}/comparison")
+
+    click.echo(f"Running BWA/RFCaller with {cores} cores and {max_memory}G RAM.")
+    
     config = {
         "fastqs": str(Path(fastqs).absolute()) if fastqs else "",
         "comparison": str(Path(comparison).absolute()) if comparison else "",
@@ -68,12 +84,12 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
         "other_threads": other_threads,
         "memory": memory,
         "keep_merged": keep,
-        "workdir": str(Path(outdir).absolute())
+        "workdir": str(outdir)
     }
 
     snakefile_dir = str(Path(dirname(__file__)).absolute())
-
-    f = open('config.yaml', 'w+')
+    
+    f = open(outdir +'/config.yaml', 'w+')
     yaml.dump(config, f)
     cmd = f"snakemake --snakefile {snakefile_dir}/Snakefile --configfile config.yaml --resources mem_gb={max_memory} --cores {cores} "
 
@@ -86,7 +102,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     cmd += f"{targets}" 
     print(cmd)
 
-    log_path = str(Path(outdir).absolute()) + "/run.log"
+    log_path = outdir + "/run.log"
     with open(log_path, "w") as log:
         try:
             if verbose:
@@ -103,6 +119,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     if clean:
         remove("config.yaml")
         remove(log_path)
+        remove(f"{outdir}/input")
 
 if __name__ == '__main__':
     run()
