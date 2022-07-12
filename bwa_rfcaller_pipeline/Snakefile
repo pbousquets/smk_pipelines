@@ -49,7 +49,7 @@ elif (not config["fastqs"]) and config["comparison"]:
 
 fasta = config["fasta"]
 dbsnp = config["dbsnp"]
-
+ 
 def get_fastq(wildcards):
     return {'fastq1' : metadata.loc[(wildcards.rg), 'F1'],
             'fastq2' : metadata.loc[(wildcards.rg), 'F2']}
@@ -61,14 +61,24 @@ wildcard_constraints:
     rg='|'.join([x for x in rgs]),
     comparison='|'.join([x for x in comparisons]),
 
+
+if config["keep_merged"] == False:
+    ruleorder: samtools_merge > samtools_merge_keep
+else:
+    ruleorder: samtools_merge_keep > samtools_merge
+
 ## Targets
 rule rfcaller_vcf:
     input:
         expand("mutations_{comparison}.vcf", comparison = comparisons)
 
-rule rg_bams:
+rule merged_bams:
     input:
         set(expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments))
+
+rule merged_index:
+    input: 
+        set(expand("{patient}/{sample}/{experiment}.merged.bam.bai", zip, patient = patients, sample = samples, experiment = experiments))
 
 rule discordants_split:
     input:
@@ -78,6 +88,10 @@ rule discordants_split:
 rule bqsr_bams:
     input:
         expand("{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam", zip,patient = patients, sample = samples, experiment = experiments)
+
+rule bqsr_index:
+    input:
+        expand("{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam.bai", zip,patient = patients, sample = samples, experiment = experiments)
 
 ## Rules
 rule bwa_mem2:
@@ -141,7 +155,11 @@ rule samtools_merge:
     threads:
         config["other_threads"],
     shell:
-        "samtools merge -@ {threads} -l 0 {output} {input} && samtools index -@ {threads} {output}"
+        "samtools merge -@ {threads} -l 0 {output} {input}"
+
+use rule samtools_merge as samtools_merge_keep with:
+    output:
+        "{patient}/{sample}/{experiment}.merged.bam"
 
 use rule samtools_merge as merge_discordant with:
     input:
@@ -155,13 +173,23 @@ use rule samtools_merge as merge_split with:
     output:
         "{patient}/{sample}/{experiment}.split_reads.bam"
 
+rule index:
+    input:
+        "{patient}/{sample}/{experiment}.merged.bam"
+    output:
+        "{patient}/{sample}/{experiment}.merged.bam.bai"
+    threads: 
+        config["other_threads"]
+    shell:
+        "samtools index -@ {threads} {input} {output}"
+
 rule RealignerTargetCreator:
     input:
         bam = expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments),
         dbsnp = dbsnp,
         fasta = fasta
     output:
-        intervals = temp("intervals.intervals"),
+        intervals = "intervals.intervals",
         bamlist = temp("bams.list")
     threads:
         config["other_threads"],
@@ -197,7 +225,13 @@ rule ApplyBQSR:
     output:
         bam = "{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam"
     shell:
-        "gatk --java-options '-Dsamjdk.compression_level=1' ApplyBQSR -R {fasta} -I {input.bam} --bqsr-recal-file {input.recal_table} -O {output}"
+        "gatk --java-options '-Dsamjdk.compression_level=1' ApplyBQSR -R {fasta} -I {input.bam} --bqsr-recal-file {input.recal_table} -O {output} --create-output-bam-index false"
+
+use rule index as index_bqsr_bam with:
+    input:
+        "{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam"
+    output:
+        "{patient}/{sample}/{experiment}.dups.indelrealigned.bqsr.bam.bai"
 
 rule rfcaller:
     input:
