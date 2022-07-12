@@ -11,7 +11,6 @@ from snakemake.utils import validate, min_version
 min_version("5.9.1")
 validate(config, "config.schema.yml")
 
-##TODO: indexar bams
 workdir: config["workdir"]
 patients, samples, experiments, rgs, comparisons = list(), list(), list(),list(), list()
 
@@ -156,7 +155,7 @@ rule samtools_merge:
     threads:
         config["other_threads"],
     shell:
-        "samtools merge -@ {threads} -l 0 {output} {input} && samtools index -@ {threads} {output}"
+        "samtools merge -@ {threads} -l 0 {output} {input}"
 
 use rule samtools_merge as samtools_merge_keep with:
     output:

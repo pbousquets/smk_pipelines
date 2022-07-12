@@ -37,7 +37,6 @@ COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
 RUN pip install click TPOT==0.11.1 regex==2020.4.4
-RUN echo ..............
 RUN cd / && git clone -b dev https://github.com/pbousquets/smk_pipelines 
 
 ## Entrypoint
