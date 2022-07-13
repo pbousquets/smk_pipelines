@@ -16,7 +16,7 @@ patients, samples, experiments, rgs, comparisons = list(), list(), list(),list()
 
 if config["fastqs"]:
     metadata = pd.read_csv(config["fastqs"], sep = "\t", dtype=str)
-    metadata['RG'] = metadata['F1'].apply(lambda x: regex.search("(.*)(?=[._](R)?1\.f(ast)?q(\.gz)?$)", x).group())
+    metadata['RG'] = metadata['F1'].apply(lambda x: regex.search("([^\/]+)(?=[._](R)?1\.f(ast)?q(\.gz)?$)", x).group())
     metadata['F1'] = metadata['F1'].apply(lambda x: pathlib.Path(x).absolute())
     metadata['F2'] = metadata['F2'].apply(lambda x: pathlib.Path(x).absolute())
     key_separator = "@" if any([metadata[col].str.contains("_").any() for col in ["PATIENT", "SAMPLE", "EXPERIMENT"]]) else "_"
@@ -63,7 +63,6 @@ wildcard_constraints:
     comparison='|'.join([x for x in comparisons]),
 
 
-print(metadata_by_exp)
 if config["keep_merged"] == False:
     ruleorder: samtools_merge > samtools_merge_keep
 else:
