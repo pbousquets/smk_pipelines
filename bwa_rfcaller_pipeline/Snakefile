@@ -19,9 +19,10 @@ if config["fastqs"]:
     metadata['RG'] = metadata['F1'].apply(lambda x: regex.search("(.*)(?=[._](R)?1\.f(ast)?q(\.gz)?$)", x).group())
     metadata['F1'] = metadata['F1'].apply(lambda x: pathlib.Path(x).absolute())
     metadata['F2'] = metadata['F2'].apply(lambda x: pathlib.Path(x).absolute())
-    metadata["key"] = metadata[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg('_'.join, axis=1)
+    key_separator = "@" if any([metadata[col].str.contains("_").any() for col in ["PATIENT", "SAMPLE", "EXPERIMENT"]]) else "_"
+    metadata["key"] = metadata[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg(key_separator.join, axis=1)
     metadata_by_exp = metadata
-    metadata_by_exp["bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('_'.join, axis=1) + ".dups.sorted.bam"
+    metadata_by_exp["bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('.'.join, axis=1) + ".dups.sorted.bam"
     metadata_by_exp["split"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".splitreads.bam"
     metadata_by_exp["discordant"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT", "RG"]].agg('/'.join, axis=1) + ".discordant.bam"
     metadata_by_exp["final_bam"] = metadata_by_exp[["PATIENT", "SAMPLE", "EXPERIMENT"]].agg('/'.join, axis=1) + ".dups.indelrealigned.bqsr.bam"
@@ -31,7 +32,7 @@ if config["fastqs"]:
     expected_final_bam = dict(metadata_by_exp.drop_duplicates(subset = ['EXPERIMENT'], keep = 'first').groupby('EXPERIMENT')['final_bam'].apply(list))
     metadata = metadata.set_index(["RG"], drop=False)
     keys = list(set(metadata.key.tolist()))
-    keys = [key.split("_") for key in keys]
+    keys = [key.split(key_separator) for key in keys]
     patients, samples, experiments =  [item[0] for item in keys], [item[1] for item in keys], [item[2] for item in keys]
     rgs = metadata.RG.tolist()
 
@@ -62,6 +63,7 @@ wildcard_constraints:
     comparison='|'.join([x for x in comparisons]),
 
 
+print(metadata_by_exp)
 if config["keep_merged"] == False:
     ruleorder: samtools_merge > samtools_merge_keep
 else:
@@ -99,7 +101,7 @@ rule bwa_mem2:
         unpack(get_fastq),
         fasta = fasta
     output:
-        pipe("{patient}_{sample}_{experiment}_{rg}.bam"),
+        pipe("{patient}.{sample}.{experiment}.{rg}.bam"),
     params:
         PL = config['PL'],
         CN = config['CN'],
@@ -117,7 +119,7 @@ rule MarkDuplicates:
     input:
         rules.bwa_mem2.output,
     output:
-        bam = pipe("{patient}_{sample}_{experiment}_{rg}.dups.bam"),
+        bam = pipe("{patient}.{sample}.{experiment}.{rg}.dups.bam"),
         discordant = temp("{patient}/{sample}/{experiment}/{rg}.discordant.sam"),
         split = temp("{patient}/{sample}/{experiment}/{rg}.splitreads.sam"),
     shell:
@@ -127,7 +129,7 @@ rule sort:
     input:
         rules.MarkDuplicates.output.bam,
     output:
-        temp("{patient}_{sample}_{experiment}_{rg}.dups.sorted.bam")
+        temp("{patient}.{sample}.{experiment}.{rg}.dups.sorted.bam")
     resources:
         mem_gb=config.get("memory"),
     threads:
