@@ -41,6 +41,8 @@ if config["comparison"]:
     comparisons_df['COMPARISON'] = comparisons_df[["TUMOR_EXPERIMENT", "NORMAL_EXPERIMENT"]].agg('.'.join, axis=1)
     comparisons_df = comparisons_df.set_index(["COMPARISON"], drop=False).sort_index()
     comparisons = comparisons_df.COMPARISON.tolist()
+    tumor_experiments = comparisons_df.TUMOR_EXPERIMENT.tolist()
+    normal_experiments = comparisons_df.NORMAL_EXPERIMENT.tolist()
 
 if config["fastqs"] and config["comparison"]:
     comparisons_df['TUMOR_BAM'] = comparisons_df['TUMOR_EXPERIMENT'].map(expected_final_bam)
@@ -73,6 +75,11 @@ rule rfcaller_vcf:
     input:
         expand("mutations_{comparison}.vcf", comparison = comparisons)
 
+rule get_minibams:
+    input:
+        expand("{comparison}.tumor.minibam.bam", comparison = comparisons),
+        expand("{comparison}.normal.minibam.bam", comparison = comparisons)
+    
 rule merged_bams:
     input:
         set(expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments))
@@ -197,15 +204,19 @@ rule RealignerTargetCreator:
     shell:
         "echo {input.bam} | tr ' \t ' '\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
 
-rule GenomeAnalysisTK:
+rule GenomeAnalysisTK: ## TODO: probar el programa con los comandos comentados (revisarlos bien antes!)
     input:
+        #bam = expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments),
         bam = rules.samtools_merge.output,
         intervals = rules.RealignerTargetCreator.output.intervals,
         fasta = fasta
     output:
+        #expand("{patient}/{sample}/{experiment}.merged.indelrealigned.bam", zip, patient = patients, sample = samples, experiment = experiments),
         temp("{patient}/{sample}/{experiment}.merged.indelrealigned.bam")
     shell:
-        "java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T IndelRealigner -I {input.bam} -targetIntervals {input.intervals} -o {output} -R {input.fasta} -compress 0 --disable_bam_indexing"
+        "java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T IndelRealigner -I {input.bam} -targetIntervals {input.intervals} -o {output} -R {input.fasta} -compress 0 --disable_bam_indexing" #-l bamlist --nWayOut indelrealigned.bam
+
+
 
 rule BaseRecalibrator:
     input:
@@ -251,4 +262,21 @@ rule rfcaller:
     threads: config["threads"]
     shell:
         "RFcaller -@ {threads} -nb {input.normal} -tb {input.tumor} -o {wildcards.comparison} --genome {params.fasta} --dbSNP {params.dbsnp} --ploidy_file {params.ploidy_file} --PoN {params.pon} && touch {output.vcf}"
+
+rule make_minibams:
+    input:
+        tumor = lambda wildcards: comparisons_df.loc[wildcards.comparison, "TUMOR_BAM"],
+        normal = lambda wildcards: comparisons_df.loc[wildcards.comparison, "NORMAL_BAM"],
+        vcf = rules.rfcaller.output.vcf
+    output:
+        tumor_mini = "{comparison}.tumor.minibam.bam",
+        normal_mini = "{comparison}.normal.minibam.bam",
+        regions = temp("{comparison}.regions")
+    threads: config["other_threads"],
+    params:
+        minibam_padding = config["minibam_padding"]
+    wildcard_constraints:
+        comparison='|'.join([x for x in comparisons]),
+    shell:
+        """awk -F'\\t' '{{if ($0 !~ /^#/) {{print $1"\\t"$2-{params.minibam_padding}"\\t"$2+{params.minibam_padding} }} }}' {input.vcf} > {output.regions} && variant {input.tumor} --proc-regions-file {output.regions} -t {threads} -b -o {output.tumor_mini} && variant {input.normal} --proc-regions-file {output.regions} -t {threads} -b -o {output.normal_mini}"""
 

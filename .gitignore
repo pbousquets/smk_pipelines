@@ -7,3 +7,8 @@ bwa_rfcaller_pipeline/test/run.log
 bwa_rfcaller_pipeline/Dockerfile
 bwa_rfcaller_pipeline/test/test_results
 
+bwa_rfcaller_pipeline/test/mutations_1604T1.1604N1.vcf
+bwa_rfcaller_pipeline/test/RFcaller.log
+bwa_rfcaller_pipeline/test/1604T1.1604N1.tumor.minibam.bam
+bwa_rfcaller_pipeline/test/1604T1.1604N1.normal.minibam.bam
+bwa_rfcaller_pipeline/test/.stderr.log

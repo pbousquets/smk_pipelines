@@ -36,15 +36,19 @@ RUN apt-get update && apt-get install -y sambamba
 COPY docker_image/databases/ /home/databases/
 COPY docker_image/RFcaller/ /home/RFcaller/
 
+## Install VariantBAM 
+RUN cd / && git clone --recursive https://github.com/jwalabroad/VariantBam.git && cd VariantBam && ./configure && make
+
+## Install pipelines
 RUN pip install click TPOT==0.11.1 regex==2020.4.4
-RUN cd / && git clone -b dev https://github.com/pbousquets/smk_pipelines 
+RUN cd / && git clone https://github.com/pbousquets/smk_pipelines 
+
 
 ## Entrypoint
 ENTRYPOINT ["/smk_pipelines/bwa_rfcaller_pipeline/wrapper.py"]
 
 ## Set environment
-ENV PATH="${PATH}:/bwa-mem2-2.2.1_x64-linux" 
-ENV PATH="$PATH:/home/RFcaller/scripts/"
+ENV PATH="${PATH}:/bwa-mem2-2.2.1_x64-linux:/VariantBam/src/:/home/RFcaller/scripts/" 
 ENV LC_ALL=C.UTF-8
 ENV  LANG=C.UTF-8
 WORKDIR /home

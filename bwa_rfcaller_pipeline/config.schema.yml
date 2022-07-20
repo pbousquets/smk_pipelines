@@ -33,6 +33,10 @@ properties:
         type: string
         default: GRCh38
         description: Sample ID
+    minibam_padding:
+        type: number
+        default: 1000
+        description: Padding to extend the range of the desired reads of the minibams
     threads:
         type: number
         default: 20
