@@ -23,31 +23,17 @@ def run_validations(
     memory,
     max_memory,
 ):
-    assert not fastqs or exists(
-        fastqs
-    ), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
-    assert (
-        exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets)
-    ) or "rfcaller_vcf" not in targets, f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
+    assert not fastqs or exists(fastqs), f"MissingFileError: FastQs metadata file does not exist: {fastqs} \n"
+    assert (exists(comparison) and ("rfcaller_vcf" in targets or "all" in targets)) or "rfcaller_vcf" not in targets, f"MissingFileError: RFcaller is expected to run, but comparison file does not exist: {comparison} \n"
     if comparison and not fastqs:
         metadata = pd.read_csv(str(Path(comparison).absolute()), sep="\t", dtype=str)
-        assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(
-            metadata.columns
-        ), "Error. TUMOR_BAM and NORMAL_BAM expected in comparison file when no fastq file is provided"
+        assert {"TUMOR_BAM", "NORMAL_BAM"}.issubset(metadata.columns), "Error. TUMOR_BAM and NORMAL_BAM expected in comparison file when no fastq file is provided"
     assert exists(fasta), f"MissingFileError: Fasta file does not exist: {fasta} \n"
     assert exists(dbsnp), f"dbSNP file does not exist: {dbsnp} \n"
-    assert pon.lower() in ["hg38", "hg19"] or exists(
-        pon
-    ), f"PoNError: The pon variable isn't any of hg38 or hg19 and doesn't not exist either: {pon} \n"
-    assert ploidy.lower() in ["grch38", "grch19"] or exists(
-        ploidy
-    ), f"PloidyError: The ploidy variable isn't any of GRCh38 or GRCh37 and doesn't not exist either: {ploidy} \n"
-    assert (
-        threads + other_threads <= cores
-    ), "CoresError: The BWA threads and other_threads sum cannot exceed the max total cores \n"
-    assert (
-        max_memory > memory
-    ), "MemoryError: The max_memory variable ({max_memory}) must be greater that the memory variable ({memory})"
+    assert pon.lower() in ["hg38", "hg19"] or exists(pon), f"PoNError: The pon variable isn't any of hg38 or hg19 and doesn't not exist either: {pon} \n"
+    assert ploidy.lower() in ["grch38", "grch19"] or exists(ploidy), f"PloidyError: The ploidy variable isn't any of GRCh38 or GRCh37 and doesn't not exist either: {ploidy} \n"
+    assert threads + other_threads <= cores, "CoresError: The BWA threads and other_threads sum cannot exceed the max total cores \n"
+    assert max_memory > memory, "MemoryError: The max_memory variable ({max_memory}) must be greater that the memory variable ({memory})"
 
     ploidy_exists = True if exists(ploidy) else False
     pon_exists = True if exists(pon) else False
@@ -69,60 +55,17 @@ def run_validations(
 )
 @click.option("--fasta", required=True, help="Path to reference genome fasta")
 @click.option("--dbsnp", required=True, help="Path to dbsnp")
-@click.option(
-    "--outdir",
-    default=".",
-    help="\b\nOutput directory. If missing, it will be created",
-)
-@click.option(
-    "--platform",
-    default="ILLUMINA-NOVASEQ-6000",
-    help="\b\nName of the sequencing platform",
-)
+@click.option("--outdir", default=".", help="\b\nOutput directory. If missing, it will be created")
+@click.option("--platform", default="ILLUMINA-NOVASEQ-6000", help="\b\nName of the sequencing platform")
 @click.option("--center", default="MACROGEN", help="Name of the platform center")
-@click.option(
-    "--pon",
-    default="hg38",
-    help="\b\nPanel of normals. hg38 and hg19 are built-in, or path to custom pon",
-    type=str,
-)
-@click.option(
-    "--ploidy",
-    default="GRCh38",
-    help="\b\nBcftools ploidy file (GRCh38 or GRCh37)",
-    type=str,
-)
+@click.option("--pon", default="hg38", help="\b\nPanel of normals. hg38 and hg19 are built-in, or path to custom pon", type=str)
+@click.option("--ploidy", default="GRCh38", help="\b\nBcftools ploidy file (GRCh38 or GRCh37)", type=str)
 @click.option("--threads", default=24, help="Number of threads per job in BWA", type=int)
-@click.option(
-    "--other_threads",
-    default=5,
-    help="\b\nNumber of threads for minor steps (merge, sort, ...)",
-    type=int,
-)
-@click.option(
-    "--cores",
-    default=60,
-    help="\b\nMax number of cores provided to snakemake",
-    type=int,
-)
-@click.option(
-    "--memory",
-    default=40,
-    help="\b\nMax RAM memory allowed to sort (Gb) per FASTQ pair",
-    type=int,
-)
-@click.option(
-    "--max_memory",
-    default=100,
-    help="Max total RAM memory allowed (Gb)",
-    type=int,
-)
-@click.option(
-    "--minibam",
-    default=False,
-    help="Return minibams for somatic mutations when RFcaller is ran",
-    is_flag=True,
-)
+@click.option("--other_threads", default=5, help="\b\nNumber of threads for minor steps (merge, sort, ...)", type=int)
+@click.option("--cores", default=60, help="\b\nMax number of cores provided to snakemake", type=int)
+@click.option("--memory", default=40, help="\b\nMax RAM memory allowed to sort (Gb) per FASTQ pair", type=int)
+@click.option("--max_memory", default=100, help="Max total RAM memory allowed (Gb)", type=int)
+@click.option("--minibam", default=False, help="Return minibams for somatic mutations when RFcaller is ran", is_flag=True)
 @click.option(
     "--minibam_padding",
     default=1000,
@@ -141,74 +84,13 @@ def run_validations(
     default=False,
     help="\b\nMake validations only and launch snakemake in dry-run mode",
 )
-@click.argument(
-    "targets",
-    nargs=-1,
-    type=click.Choice(
-        [
-            "all",
-            "merged_bams",
-            "merged_index",
-            "discordants_split",
-            "bqsr_bams",
-            "bqsr_index",
-            "rfcaller_vcf",
-        ],
-        case_sensitive=False,
-    ),
-)
-def run(
-    fastqs,
-    comparison,
-    fasta,
-    dbsnp,
-    targets,
-    platform,
-    center,
-    pon,
-    ploidy,
-    threads,
-    other_threads,
-    cores,
-    memory,
-    max_memory,
-    minibam,
-    minibam_padding,
-    verbose,
-    clean,
-    dryrun,
-    outdir,
-):
+@click.argument("targets", nargs=-1, type=click.Choice(["all", "merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"], case_sensitive=False))
+def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy, threads, other_threads, cores, memory, max_memory, minibam, minibam_padding, verbose, clean, dryrun, outdir):
     """Simple wrapper for launching BWA-mem2/RFcaller with snakemake."""
 
-    ploidy_exists, pon_exists = run_validations(
-        fastqs,
-        comparison,
-        fasta,
-        dbsnp,
-        targets,
-        pon,
-        ploidy,
-        threads,
-        other_threads,
-        cores,
-        memory,
-        max_memory,
-    )
+    ploidy_exists, pon_exists = run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
 
-    targets = " ".join(
-        [
-            "merged_bams",
-            "merged_index",
-            "discordants_split",
-            "bqsr_bams",
-            "bqsr_index",
-            "rfcaller_vcf",
-        ]
-        if "all" in targets
-        else " ".join(targets)
-    )
-
+    targets = " ".join(["merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
     targets = targets + "minibam" if "rfcaller_vcf" in targets and minibam else ""
 
     keep = True if "merged_bams" in targets else False
