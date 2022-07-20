@@ -6,6 +6,7 @@ from os import remove, makedirs
 from os.path import dirname, exists, abspath
 from pathlib import Path
 import pandas as pd
+from sys import exit
 
 
 def run_validations(
@@ -69,7 +70,9 @@ def run_validations(
 @click.option("--fasta", required=True, help="Path to reference genome fasta")
 @click.option("--dbsnp", required=True, help="Path to dbsnp")
 @click.option(
-    "--outdir", default=".", help="\b\nOutput directory. If missing, it will be created"
+    "--outdir",
+    default=".",
+    help="\b\nOutput directory. If missing, it will be created",
 )
 @click.option(
     "--platform",
@@ -89,9 +92,7 @@ def run_validations(
     help="\b\nBcftools ploidy file (GRCh38 or GRCh37)",
     type=str,
 )
-@click.option(
-    "--threads", default=24, help="Number of threads per job in BWA", type=int
-)
+@click.option("--threads", default=24, help="Number of threads per job in BWA", type=int)
 @click.option(
     "--other_threads",
     default=5,
@@ -111,7 +112,10 @@ def run_validations(
     type=int,
 )
 @click.option(
-    "--max_memory", default=100, help="Max total RAM memory allowed (Gb)", type=int
+    "--max_memory",
+    default=100,
+    help="Max total RAM memory allowed (Gb)",
+    type=int,
 )
 @click.option(
     "--minibam",
@@ -255,19 +259,19 @@ def run(
                 subprocess.check_call(cmd, shell=True)
             else:
                 subprocess.check_call(cmd, stdout=log, shell=True)
-
+            exit_code = 0
         except subprocess.CalledProcessError as e:
             print(f"Error in snakemake invocation: {e}", file=log)
             if verbose:
                 print(f"Error in snakemake invocation: {e}")
-            return (
-                e.returncode
-            )  ##TODO: asegurarse de que se sale en base a este código al final del script
+            exit_code = 1
 
     if clean:
         remove("config.yaml")
         remove(log_path)
         remove(f"{outdir}/input")
+
+    exit(exit_code)
 
 
 if __name__ == "__main__":
