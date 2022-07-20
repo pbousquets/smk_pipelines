@@ -168,6 +168,8 @@ rule samtools_merge:
 use rule samtools_merge as samtools_merge_keep with:
     output:
         "{patient}/{sample}/{experiment}.merged.bam"
+    shell:
+        "samtools merge -@ {threads} {output} {input}"
 
 use rule samtools_merge as merge_discordant with:
     input:
