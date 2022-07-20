@@ -91,7 +91,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     ploidy_exists, pon_exists = run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
 
     targets = " ".join(["merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
-    targets = targets + " minibam" if "rfcaller_vcf" in targets and minibam else ""
+    targets = targets + " get_minibams" if "rfcaller_vcf" in targets and minibam else ""
 
     keep = True if "merged_bams" in targets else False
 
