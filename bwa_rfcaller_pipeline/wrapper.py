@@ -3,7 +3,7 @@ import click
 import subprocess
 import yaml
 from os import remove, makedirs
-from os.path import dirname, exists, abspath
+from os.path import dirname, exists
 from pathlib import Path
 import pandas as pd
 from sys import exit
@@ -91,7 +91,7 @@ def run(fastqs, comparison, fasta, dbsnp, targets, platform, center, pon, ploidy
     ploidy_exists, pon_exists = run_validations(fastqs, comparison, fasta, dbsnp, targets, pon, ploidy, threads, other_threads, cores, memory, max_memory)
 
     targets = " ".join(["merged_bams", "merged_index", "discordants_split", "bqsr_bams", "bqsr_index", "rfcaller_vcf"]) if "all" in targets else " ".join(targets)
-    targets = targets + "minibam" if "rfcaller_vcf" in targets and minibam else ""
+    targets = targets + " minibam" if "rfcaller_vcf" in targets and minibam else ""
 
     keep = True if "merged_bams" in targets else False
 
