@@ -162,26 +162,32 @@ rule samtools_merge:
         temp("{patient}/{sample}/{experiment}.merged.bam")
     threads:
         config["other_threads"],
+    params:
+        compression_level = 0
     shell:
-        "samtools merge -@ {threads} -l 0 {output} {input}"
+        "samtools merge -@ {threads} -l {params.compression_level} {output} {input}"
 
 use rule samtools_merge as samtools_merge_keep with:
     output:
         "{patient}/{sample}/{experiment}.merged.bam"
-    shell:
-        "samtools merge -@ {threads} {output} {input}"
+    params:
+        compression_level = 6
 
 use rule samtools_merge as merge_discordant with:
     input:
         lambda wildcards: expected_disc[wildcards.experiment],
     output:
         "{patient}/{sample}/{experiment}.discordant_reads.bam"
+    params:
+        compression_level = 6
 
 use rule samtools_merge as merge_split with:
     input:
         lambda wildcards: expected_split[wildcards.experiment],
     output:
         "{patient}/{sample}/{experiment}.split_reads.bam"
+    params:
+        compression_level = 6
 
 rule index:
     input:
