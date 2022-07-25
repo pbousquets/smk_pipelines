@@ -77,9 +77,9 @@ rule rfcaller_vcf:
 
 rule get_minibams:
     input:
-        expand("{comparison}.tumor.minibam.bam", comparison = comparisons),
-        expand("{comparison}.normal.minibam.bam", comparison = comparisons)
-    
+        expand("{comparison}.{type}.minibam.bam", comparison = comparisons, type = ["tumor", "normal"]),
+        expand("{comparison}.{type}.minibam.bam.bai", comparison = comparisons, type = ["tumor", "normal"]),
+
 rule merged_bams:
     input:
         set(expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments))
@@ -210,25 +210,22 @@ rule RealignerTargetCreator:
     threads:
         config["other_threads"],
     shell:
-        "echo {input.bam} | tr ' \t ' '\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
+        "echo {input.bam} | tr ' \\t ' '\\n' > {output.bamlist} && java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T RealignerTargetCreator -known {input.dbsnp} -I {output.bamlist} -o {output.intervals} -R {input.fasta} -nt {threads}"
 
-rule GenomeAnalysisTK: ## TODO: probar el programa con los comandos comentados (revisarlos bien antes!)
+rule GenomeAnalysisTK:
     input:
-        #bam = expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments),
-        bam = rules.samtools_merge.output,
+        bam = expand("{patient}/{sample}/{experiment}.merged.bam", zip, patient = patients, sample = samples, experiment = experiments),
+        bamlist = rules.RealignerTargetCreator.output.bamlist,
         intervals = rules.RealignerTargetCreator.output.intervals,
         fasta = fasta
     output:
-        #expand("{patient}/{sample}/{experiment}.merged.indelrealigned.bam", zip, patient = patients, sample = samples, experiment = experiments),
-        temp("{patient}/{sample}/{experiment}.merged.indelrealigned.bam")
+        temp(expand("{patient}/{sample}/{experiment}.merged.indelrealigned.bam", zip, patient = patients, sample = samples, experiment = experiments)),
     shell:
-        "java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T IndelRealigner -I {input.bam} -targetIntervals {input.intervals} -o {output} -R {input.fasta} -compress 0 --disable_bam_indexing" #-l bamlist --nWayOut indelrealigned.bam
-
-
+        "java -Xmx24g -jar /usr/GenomeAnalysisTK.jar -T IndelRealigner -I {input.bamlist} -targetIntervals {input.intervals} -R {input.fasta} -compress 0 --nWayOut .indelrealigned.bam && cat {input.bamlist} | while read bam; do out=$(echo $bam | sed 's/bam/indelrealigned.bam/g'); in=$(basename $out); mv $in $out; rm ${{in%.bam}}.bai; done"
 
 rule BaseRecalibrator:
-    input:
-        bam = rules.GenomeAnalysisTK.output,
+    input:  
+        bam = "{patient}/{sample}/{experiment}.merged.indelrealigned.bam",
         dbsnp = dbsnp,
         fasta = fasta
     output:
@@ -238,7 +235,7 @@ rule BaseRecalibrator:
 
 rule ApplyBQSR:
     input:
-        bam =  rules.GenomeAnalysisTK.output,
+        bam =  "{patient}/{sample}/{experiment}.merged.indelrealigned.bam",
         recal_table = "{patient}/{sample}/{experiment}.recal_data.table",
         dbsnp = dbsnp,
         fasta = fasta
@@ -287,4 +284,10 @@ rule make_minibams:
         comparison='|'.join([x for x in comparisons]),
     shell:
         """awk -F'\\t' '{{if ($0 !~ /^#/) {{print $1"\\t"$2-{params.minibam_padding}"\\t"$2+{params.minibam_padding} }} }}' {input.vcf} > {output.regions} && variant {input.tumor} --proc-regions-file {output.regions} -t {threads} -b -o {output.tumor_mini} && variant {input.normal} --proc-regions-file {output.regions} -t {threads} -b -o {output.normal_mini}"""
+
+use rule index as index_minibam with:
+    input:
+        "{comparison}.{type}.minibam.bam"
+    output:
+        "{comparison}.{type}.minibam.bam.bai"
 
